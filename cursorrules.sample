@@ -1,0 +1,19 @@
+# Cursor ルール初期設定（Wan to）
+
+このプロジェクトでは Cursor のルールを `.cursor/rules/` で管理しています。
+
+## ルール一覧
+
+| ファイル | 適用 | 内容 |
+|----------|------|------|
+| `wan-to-project.mdc` | 常時 (alwaysApply) | プロジェクト概要・技術スタック・API Key セキュリティ方針 |
+| `dart-flutter.mdc` | `**/*.dart` を編集時 | Dart/Flutter 規約・OCR・分類・AI 連携・エラー処理 |
+
+## 仕様書
+
+- **SPEC_WANT_TO.md** … アプリの最終仕様書（共有シート起点・ユーザー API Key 版・分類＆プロンプト確定）
+
+## カスタマイズ
+
+- 新しいルールは `.cursor/rules/*.mdc` に YAML frontmatter 付きで追加
+- `description` / `globs` / `alwaysApply` を指定（詳細は Cursor の create-rule スキル参照）

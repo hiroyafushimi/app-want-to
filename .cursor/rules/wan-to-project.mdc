@@ -1,0 +1,26 @@
+---
+description: Wan to プロジェクトの概要・スタック・セキュリティ方針（常時適用）
+alwaysApply: true
+---
+
+# Wan to プロジェクトルール
+
+## プロダクト概要
+- スクショ → 共有シート起動 → 指で範囲指定 → OCR → テキスト化 → 分類（商品/文章/その他）→ アクション提案・実行
+- 常駐・オーバーレイなし。AI はユーザー API Key のみで外部呼び出し（アプリ側コストゼロ）。
+
+## 技術スタック
+- **フレームワーク**: Flutter（iOS / Android）
+- **OCR**: Apple Vision（iOS）/ Google ML Kit（Android）。オフライン・デバイス内のみ。
+- **共有受信**: Share Extension（iOS）/ Intent Filter（Android）
+- **API Key 保存**: flutter_secure_storage で暗号化。画面表示はマスク（****-****）のみ。
+
+## セキュリティ（最優先）
+- API Key は **ログ出力・クリップボード・ネットワーク送信に絶対に含めない**
+- 画面表示時はマスクのみ。アプリ削除で Key も消去
+- 画像制限: 最大 5MB / 4096×4096px。超過時は自動縮小 or エラー
+- 詳細は `SPEC_WANT_TO.md` を参照
+
+## 参照
+- 仕様書: `SPEC_WANT_TO.md`
+- Dart/Flutter 規約: `dart-flutter.mdc`（*.dart 編集時）

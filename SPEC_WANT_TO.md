@@ -1,0 +1,1 @@
+spec_quickrange_ocr.md
