@@ -103,9 +103,240 @@ flutter create . --project-name want_to --org com.wantto
 - `lib/main.dart` が上書きされた場合は、`runApp(const WanToApp());` で起動する内容に戻してください。
 - または `scripts/create_platforms.sh` を実行しても構いません。
 
-**Android**: `android/app/src/main/AndroidManifest.xml` に共有インテント用の intent-filter を追加する必要があります（`receive_sharing_intent` のドキュメント参照）。
+**Android**: 共有用の intent-filter は **すでに追加済み**です（下記「intent-filter とは」参照）。
 
-**iOS**: Share Extension の設定が別途必要です（Xcode で Share Extension ターゲット追加など）。
+**iOS**: Share Extension の設定が別途必要です。手順は下記「iOS Share Extension の設定（詳細）」を参照してください。
+
+### iOS Share Extension の設定（詳細）
+
+共有シートから画像を受け取るには、`receive_sharing_intent` 用に **Share Extension** を Xcode で追加し、App Groups と URL スキームを設定する必要があります。
+
+#### 1. Xcode で Share Extension ターゲットを追加
+
+1. **Xcode でワークスペースを開く**
+   ```bash
+   cd /path/to/app-want-to
+   open ios/Runner.xcworkspace
+   ```
+2. **File** → **New** → **Target**
+3. **Share Extension** を選択 → **Next**
+4. **Product Name**: `Share Extension`（または任意の名前。以下「Share Extension」で統一）Share Extensioで設定済み
+
+5. **Finish** → ダイアログで **Activate** を選択
+6. **Runner** と **Share Extension** の **Minimum Deployments**（iOS の最小バージョン）を同じにしておく（**General** タブで確認）
+
+#### 2. Share Extension の Info.plist を設定
+
+`ios/Share Extension/Info.plist` を次の内容に合わせて編集します（画像・テキスト・URL を受け取る例）。
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AppGroupId</key>
+	<string>$(CUSTOM_GROUP_ID)</string>
+	<key>CFBundleVersion</key>
+	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>NSExtension</key>
+	<dict>
+		<key>NSExtensionAttributes</key>
+		<dict>
+			<key>PHSupportedMediaTypes</key>
+			<array>
+				<string>Image</string>
+			</array>
+			<key>NSExtensionActivationRule</key>
+			<dict>
+				<key>NSExtensionActivationSupportsText</key>
+				<true/>
+				<key>NSExtensionActivationSupportsWebURLWithMaxCount</key>
+				<integer>1</integer>
+				<key>NSExtensionActivationSupportsImageWithMaxCount</key>
+				<integer>100</integer>
+			</dict>
+		</dict>
+		<key>NSExtensionMainStoryboard</key>
+		<string>MainInterface</string>
+		<key>NSExtensionPointIdentifier</key>
+		<string>com.apple.share-services</string>
+	</dict>
+</dict>
+</plist>
+```
+
+Wan to では画像が主なので上記のままで問題ありません。動画も受け取りたい場合は `PHSupportedMediaTypes` に `<string>Video</string>` を追加し、`NSExtensionActivationSupportsMovieWithMaxCount` を追加してください。
+
+#### 3. Runner の Info.plist に URL スキームと AppGroupId を追加
+
+`ios/Runner/Info.plist` の `<dict>` 直下に以下を追加します。
+
+```xml
+	<key>AppGroupId</key>
+	<string>$(CUSTOM_GROUP_ID)</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>ShareMedia-$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+			</array>
+		</dict>
+	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>共有された画像を処理するためにフォトライブラリへのアクセスを使用します。</string>
+```
+
+- **CFBundleURLTypes**: Share Extension からメインアプリを開くための URL スキーム（`receive_sharing_intent` が使用）
+- **NSPhotoLibraryUsageDescription**: 写真選択時の説明文（必須）
+
+#### 4. Runner の Entitlements で App Groups を有効化
+
+Xcode の画面に不慣れな方向けに、操作手順を画面の流れで説明します。
+
+**4-1. Runner ターゲットを選ぶ**
+
+1. Xcode の**左側のサイドバー**（プロジェクトナビゲーター）を開いておく。表示されていない場合はメニュー **View** → **Navigators** → **Project**（または `Cmd + 1`）。
+2. 一番上の**青いプロジェクトアイコン**（「Runner」やプロジェクト名）をクリックする。
+3. 中央のエディタエリアの**左側**に、「TARGETS」と「PROJECT」という見出しがある。その下の **TARGETS** の一覧から **Runner** を**1回クリック**して選択する（RunnerTests や Share Extension ではなく「Runner」）。
+
+**4-2. Signing & Capabilities タブを開く**
+
+1. Runner を選択した状態で、中央エディタの**上側**に「General」「Signing & Capabilities」「Resource Tags」などのタブが並んでいる。
+2. その中の **Signing & Capabilities** をクリックする。
+3. 画面に「Signing」や「Capability」のブロックが表示される。
+
+**4-3. App Groups を追加する**
+
+1. 「Signing & Capabilities」の画面で、**+ Capability** というボタンを探す（たいていは「Capability」セクションの左上か、既存の Capability の下あたり）。
+2. **+ Capability** をクリックする。
+3. 検索欄に「App Groups」と入力する。
+4. 一覧に表示された **App Groups** を**ダブルクリック**する（または選択して **Add** をクリック）。
+5. 「App Groups」のセクションが追加され、その中に「App Groups」とコンテナの一覧（まだ空の場合あり）が表示される。
+
+**4-4. 新しい App Group コンテナを追加する**
+
+1. 追加された「App Groups」のセクション内で、**+**（プラス）ボタンを探す。コンテナ一覧の横や下にあることが多い。
+2. **+** をクリックする。
+3. 新しい App Group の ID を入力する。例: `group.com.wantto.wantTo`  
+   - 形式は `group.` で始まり、その後にバンドル ID に近い名前（例: `com.wantto.wantTo`）を付けると分かりやすい。  
+   - **Runner** と **Share Extension** で**同じ ID** を使う必要があるので、ここで入力した ID をメモしておく。
+4. 入力後 **OK** または **Add** をクリックする。
+5. 一覧に追加したグループ（例: `group.com.wantto.wantTo`）が表示され、**チェックが入っている**ことを確認する。
+
+**4-5. Entitlements ファイルを確認・指定する**
+
+App Groups を追加すると、多くの場合 Xcode が **Runner.entitlements** を自動作成し、**Code Signing Entitlements** に自動で設定します。自動作成されていない場合の手順です。
+
+1. 左サイドバーで **Runner** フォルダを開き、**Runner.entitlements** というファイルがあるか確認する。
+2. **ない場合**: Runner フォルダを右クリック → **New File** → **Property List** を選び、名前を `Runner.entitlements` にして保存。左サイドバーの Runner グループ内に置く。
+3. **Runner** ターゲットを選択したまま、上側のタブで **Build Settings** をクリックする。
+4. 検索欄に「Code Signing Entitlements」と入力する。
+5. **Code Signing Entitlements** の行の「Value」列に、`Runner/Runner.entitlements` と入力する（パスはプロジェクト構成に合わせて調整。通常は `Runner/Runner.entitlements` でよい）。
+
+ここまでで、**Runner** 側の App Groups と Entitlements の設定は完了です。次は **Share Extension** 側（手順 5）で、同じ App Group ID を指定します。
+
+#### 5. Share Extension に App Groups と CUSTOM_GROUP_ID を設定
+
+1. **Share Extension** ターゲットを選択 → **Signing & Capabilities**
+2. **+ Capability** → **App Groups** を追加し、**4** で作成したものと同じグループ（例: `group.com.wantto.wantTo`）を選択
+3. **Share Extension** ターゲットで **Build Settings** を開く → **+** から **Add User-Defined Setting**
+4. 名前: `CUSTOM_GROUP_ID`、値: 上記の App Group ID（例: `group.com.wantto.wantTo`）
+5. **Runner** ターゲットの **Build Settings** にも同じ **User-Defined** の `CUSTOM_GROUP_ID` を追加し、同じ値を設定
+
+#### 6. Podfile に Share Extension ターゲットを追加
+
+`ios/Podfile` の `target 'Runner' do` ブロック内に、次のように **Share Extension** ターゲットを追加します（ターゲット名は Xcode で付けた名前と一致させる）。
+
+```ruby
+target 'Runner' do
+  use_frameworks!
+
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+  # Share Extension（Xcode で付けた名前が「Share Extension」の場合）
+  target 'Share Extension' do
+    inherit! :search_paths
+  end
+  target 'RunnerTests' do
+    inherit! :search_paths
+  end
+end
+```
+
+保存後、ターミナルで `cd ios && pod install` を実行します。
+
+#### 7. Build Phases の順序を変更（Runner ターゲット）
+
+1. **Runner** ターゲットを選択 → **Build Phases**
+2. **Embed Foundation Extensions**（または **Embed App Extensions**）を **Run Script**（Thin Binary など）**より上**にドラッグして移動
+3. これを行わないと「No such module 'receive_sharing_intent'」が出ることがあります
+
+#### 8. ShareViewController をプラグインの RSIShareViewController で継承
+
+Xcode が自動作成した `ios/Share Extension/ShareViewController.swift` を、次の内容に差し替えます。
+
+```swift
+import receive_sharing_intent
+
+class ShareViewController: RSIShareViewController {
+
+    // 共有後にメインアプリへ自動で遷移させない場合は false
+    override func shouldAutoRedirect() -> Bool {
+        return true
+    }
+
+    // 共有シートの「投稿」ボタンのラベルを変更する場合
+    override func presentationAnimationDidFinish() {
+        super.presentationAnimationDidFinish()
+        navigationController?.navigationBar.topItem?.rightBarButtonItem?.title = "Wan to で開く"
+    }
+}
+```
+
+- `shouldAutoRedirect() == true`: 共有をタップするとメインアプリが開き、`getInitialMedia()` / `getMediaStream()` で受け取れます
+- `false`: 拡張内で完結させたい場合に使用
+
+#### 9. ビルドと動作確認
+
+```bash
+flutter clean
+flutter pub get
+cd ios && pod install && cd ..
+flutter run
+```
+
+実機またはシミュレータで、写真アプリなどから画像を選択 → 共有 → 「Wan to」（または Share Extension 名）を選び、メインアプリで画像が受け取れることを確認してください。
+
+#### よくあるエラーと対処
+
+| 現象 | 対処 |
+|------|------|
+| **pod install** で `Unable to find compatibility version string for object version 70` | Xcode 16 のプロジェクト形式（object version 70）を CocoaPods が未対応のため。`ios/Runner.xcodeproj/project.pbxproj` で `objectVersion = 70` を `56` に、`compatibilityVersion = "Xcode 9.3"` を `"Xcode 14.0"` に変更してから再度 `pod install`。Xcode でプロジェクトを開くと「プロジェクト形式をアップグレード」と出る場合があるが、無視してよい。 |
+| No such module 'receive_sharing_intent' | **Runner** の Build Phases で **Embed Foundation Extensions** を **Run Script** より上に移動する |
+| Share Extension 追加後にビルドが失敗する | Share Extension の **Build Settings** → **Linking / Other Linker Flags** でメインプロジェクト由来の CocoaPods 設定を削除する |
+| Invalid Bundle. The bundle contains disallowed file 'Frameworks' | [Stack Overflow のこの回答](https://stackoverflow.com/a/25789145/2061365) などで Frameworks の埋め込み方法を確認する |
+| 共有シートにアプリが出ない | Share Extension の **Deployment Target** が Runner と一致しているか、Info.plist の NSExtension 設定を確認する |
+
+---
+
+### Android の intent-filter とは（共有シート受信）
+
+**intent-filter** は、Android に「このアプリはこんな受け取りができます」と宣言する設定です。
+
+- **共有シート**（他アプリで「共有」→ アプリを選ぶ）から画像を受け取るには、  
+  「`SEND`（1枚）」「`SEND_MULTIPLE`（複数枚）」で **image/\*** を受け取ると宣言する必要があります。
+- これを **AndroidManifest.xml** の MainActivity に `<intent-filter>` として書きます。
+- 書いておくことで、ユーザーが写真アプリなどで画像を「共有」→「Wan to」を選んだときに、Android が Wan to を起動し、`receive_sharing_intent` が画像パスを Flutter に渡します。
+
+**今回の変更**: `android/app/src/main/AndroidManifest.xml` に以下を追加済みです。
+
+- `android.intent.action.SEND` ＋ `image/*` … 画像1枚の共有を受け取る
+- `android.intent.action.SEND_MULTIPLE` ＋ `image/*` … 画像複数枚の共有を受け取る
+- `launchMode="singleTask"` … 共有のたびに新しい画面が積まれないようにする
+
+追加していないと、共有シートに「Wan to」が出ても、受け取った画像をアプリ側で扱えません。
 
 ## 実装順（進行中）
 

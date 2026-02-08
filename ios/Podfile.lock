@@ -1,0 +1,45 @@
+PODS:
+  - Flutter (1.0.0)
+  - flutter_secure_storage (6.0.0):
+    - Flutter
+  - purchases_flutter (6.30.2):
+    - Flutter
+    - PurchasesHybridCommon (= 11.1.0)
+  - PurchasesHybridCommon (11.1.0):
+    - RevenueCat (= 4.43.2)
+  - receive_sharing_intent (1.8.1):
+    - Flutter
+  - RevenueCat (4.43.2)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
+  - purchases_flutter (from `.symlinks/plugins/purchases_flutter/ios`)
+  - receive_sharing_intent (from `.symlinks/plugins/receive_sharing_intent/ios`)
+
+SPEC REPOS:
+  trunk:
+    - PurchasesHybridCommon
+    - RevenueCat
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  flutter_secure_storage:
+    :path: ".symlinks/plugins/flutter_secure_storage/ios"
+  purchases_flutter:
+    :path: ".symlinks/plugins/purchases_flutter/ios"
+  receive_sharing_intent:
+    :path: ".symlinks/plugins/receive_sharing_intent/ios"
+
+SPEC CHECKSUMS:
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
+  purchases_flutter: 9d73ec69e46d4c4e014d4b40c2d9fa60a21b8745
+  PurchasesHybridCommon: 4022d5944cb30ec44ba5159e42aa161fe0e30175
+  receive_sharing_intent: 222384f00ffe7e952bbfabaa9e3967cb87e5fe00
+  RevenueCat: 3d934653b7e8b09af88fd47e9e84cfaf5d0a89ba
+
+PODFILE CHECKSUM: aa8257b6a0e0d1fa40e9738a3400cb095449ed6d
+
+COCOAPODS: 1.16.2
