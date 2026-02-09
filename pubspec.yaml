@@ -15,7 +15,7 @@ dependencies:
   flutter_secure_storage: ^9.0.0
   google_mlkit_text_recognition: ^0.15.1
   http: ^1.1.0
-  purchases_flutter: ^6.0.0
+  purchases_flutter: ^9.0.0
   receive_sharing_intent: ^1.8.1
   share_plus: ^12.0.1
   url_launcher: ^6.3.2
@@ -25,7 +25,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true
   generate: true
+
+flutter_launcher_icons:
+  ios: true
+  android: true
+  image_path: "assets/icon/app_icon.png"
+  remove_alpha_ios: true

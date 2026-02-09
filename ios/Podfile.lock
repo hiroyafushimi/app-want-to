@@ -68,14 +68,14 @@ PODS:
   - nanopb/decode (3.30910.0)
   - nanopb/encode (3.30910.0)
   - PromisesObjC (2.4.0)
-  - purchases_flutter (6.30.2):
+  - purchases_flutter (9.11.0):
     - Flutter
-    - PurchasesHybridCommon (= 11.1.0)
-  - PurchasesHybridCommon (11.1.0):
-    - RevenueCat (= 4.43.2)
+    - PurchasesHybridCommon (= 17.31.0)
+  - PurchasesHybridCommon (17.31.0):
+    - RevenueCat (= 5.57.0)
   - receive_sharing_intent (1.8.1):
     - Flutter
-  - RevenueCat (4.43.2)
+  - RevenueCat (5.57.0)
   - share_plus (0.0.1):
     - Flutter
   - url_launcher_ios (0.0.1):
@@ -150,10 +150,10 @@ SPEC CHECKSUMS:
   MLKitVision: 39a5a812db83c4a0794445088e567f3631c11961
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
-  purchases_flutter: 9d73ec69e46d4c4e014d4b40c2d9fa60a21b8745
-  PurchasesHybridCommon: 4022d5944cb30ec44ba5159e42aa161fe0e30175
+  purchases_flutter: 10a2283136e2c98ddddb78737da5ab8bed457149
+  PurchasesHybridCommon: 21a11c5d66c8a52cf9aede45cecc2efe1551b98b
   receive_sharing_intent: 222384f00ffe7e952bbfabaa9e3967cb87e5fe00
-  RevenueCat: 3d934653b7e8b09af88fd47e9e84cfaf5d0a89ba
+  RevenueCat: 2d8aa56c68fa8e92c0d669e5e797c4a93e284f20
   share_plus: 50da8cb520a8f0f65671c6c6a99b3617ed10a58a
   url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
 

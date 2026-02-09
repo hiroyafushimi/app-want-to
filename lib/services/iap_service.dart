@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 import 'usage_service.dart';
@@ -94,13 +95,14 @@ class IAPService {
     if (!_initialized) return false;
     try {
       final result = await Purchases.purchasePackage(package);
-      _updatePremium(result);
+      _updatePremium(result.customerInfo);
       return _isPremium;
-    } on PurchasesErrorCode catch (e) {
-      if (e == PurchasesErrorCode.purchaseCancelledError) {
+    } on PlatformException catch (e) {
+      final errorCode = PurchasesErrorHelper.getErrorCode(e);
+      if (errorCode == PurchasesErrorCode.purchaseCancelledError) {
         debugPrint('[IAP] 購入キャンセル');
       } else {
-        debugPrint('[IAP] 購入エラー: $e');
+        debugPrint('[IAP] 購入エラー: $errorCode');
       }
       return false;
     } catch (e) {
