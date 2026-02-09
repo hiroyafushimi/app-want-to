@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
+
 /// 日次使用回数管理サービス（仕様 1.4: 無料=OCR 5回/日, AI 1回/日）
 ///
 /// SharedPreferences ではなくメモリ+日付チェックで軽量実装。
@@ -99,18 +101,16 @@ class UsageService {
     required String featureName,
     required int dailyLimit,
   }) {
+    final l = AppLocalizations.of(context)!;
     return showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('$featureName の上限に達しました'),
-        content: Text(
-          '無料プランでは1日 $dailyLimit 回まで利用できます。\n'
-          '明日リセットされます。',
-        ),
+        title: Text(l.usageLimitTitle(featureName)),
+        content: Text(l.usageLimitMessage(dailyLimit)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('OK'),
+            child: Text(l.ok),
           ),
         ],
       ),

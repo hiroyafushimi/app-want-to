@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
+
 /// 初回オンボーディング画面（仕様 7: 3スライド）
 ///
 /// 1. スクショ → 共有 → アプリ選択
@@ -18,27 +20,31 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _controller = PageController();
   int _currentPage = 0;
+  static const _pageCount = 3;
 
-  static const _pages = [
-    _OnboardingPage(
-      icon: Icons.share,
-      title: 'スクショを共有',
-      description: 'スクリーンショットを撮って、\n共有シートから「Wan to」を選択します。',
-      color: Colors.blue,
-    ),
-    _OnboardingPage(
-      icon: Icons.crop_free,
-      title: '囲んで OCR',
-      description: '指でドラッグして読み取りたい範囲を選択。\n日本語・英語のテキストを自動認識します。',
-      color: Colors.orange,
-    ),
-    _OnboardingPage(
-      icon: Icons.smart_toy,
-      title: 'AI で活用',
-      description: 'API Key を設定すると、\n要約・翻訳・質問回答などが利用できます。\n（設定は任意、後からでもOK）',
-      color: Colors.green,
-    ),
-  ];
+  static const _pageIcons = [Icons.share, Icons.crop_free, Icons.smart_toy];
+  static const _pageColors = [Colors.blue, Colors.orange, Colors.green];
+
+  List<_OnboardingPage> _pages(AppLocalizations l) => [
+        _OnboardingPage(
+          icon: _pageIcons[0],
+          title: l.onboarding1Title,
+          description: l.onboarding1Desc,
+          color: _pageColors[0],
+        ),
+        _OnboardingPage(
+          icon: _pageIcons[1],
+          title: l.onboarding2Title,
+          description: l.onboarding2Desc,
+          color: _pageColors[1],
+        ),
+        _OnboardingPage(
+          icon: _pageIcons[2],
+          title: l.onboarding3Title,
+          description: l.onboarding3Desc,
+          color: _pageColors[2],
+        ),
+      ];
 
   @override
   void dispose() {
@@ -48,7 +54,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLast = _currentPage == _pages.length - 1;
+    final l = AppLocalizations.of(context)!;
+    final pages = _pages(l);
+    final isLast = _currentPage == _pageCount - 1;
 
     return Scaffold(
       body: SafeArea(
@@ -59,17 +67,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               alignment: Alignment.topRight,
               child: TextButton(
                 onPressed: widget.onComplete,
-                child: const Text('スキップ'),
+                child: Text(l.onboardingSkip),
               ),
             ),
             // ページ
             Expanded(
               child: PageView.builder(
                 controller: _controller,
-                itemCount: _pages.length,
+                itemCount: _pageCount,
                 onPageChanged: (i) => setState(() => _currentPage = i),
                 itemBuilder: (_, i) {
-                  final p = _pages[i];
+                  final p = pages[i];
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 32),
                     child: Column(
@@ -112,7 +120,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
-                _pages.length,
+                _pageCount,
                 (i) => Container(
                   width: i == _currentPage ? 24 : 8,
                   height: 8,
@@ -144,7 +152,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       );
                     }
                   },
-                  child: Text(isLast ? 'はじめる' : '次へ'),
+                  child: Text(isLast ? l.onboardingStart : l.onboardingNext),
                 ),
               ),
             ),

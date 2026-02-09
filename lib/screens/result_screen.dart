@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../l10n/app_localizations.dart';
 import '../services/ai_service.dart';
 import '../services/api_key_storage.dart';
 import '../services/classification_service.dart';
@@ -54,21 +55,22 @@ class _ResultScreenState extends State<ResultScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('OCR 結果'),
+        title: Text(l.ocrResult),
         actions: [
           // 切り出し画像プレビュー切替
           if (widget.croppedImageBytes != null)
             IconButton(
               icon: Icon(_showImage ? Icons.text_fields : Icons.image),
-              tooltip: _showImage ? 'テキスト表示' : '画像プレビュー',
+              tooltip: _showImage ? l.textDisplay : l.imagePreview,
               onPressed: () => setState(() => _showImage = !_showImage),
             ),
           IconButton(
             icon: const Icon(Icons.settings),
-            tooltip: '設定',
+            tooltip: l.settingsTooltip,
             onPressed: () => Navigator.of(context).pushNamed('/settings'),
           ),
         ],
@@ -95,14 +97,15 @@ class _ResultScreenState extends State<ResultScreen> {
   // ───── テキスト表示 ─────
 
   Widget _buildTextDisplay(ThemeData theme) {
+    final l = AppLocalizations.of(context)!;
     if (widget.ocrText.trim().isEmpty) {
-      return const Center(
+      return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.text_snippet_outlined, size: 48, color: Colors.grey),
-            SizedBox(height: 8),
-            Text('テキストを認識できませんでした', style: TextStyle(color: Colors.grey)),
+            const Icon(Icons.text_snippet_outlined, size: 48, color: Colors.grey),
+            const SizedBox(height: 8),
+            Text(l.noTextRecognized, style: const TextStyle(color: Colors.grey)),
           ],
         ),
       );
@@ -121,7 +124,7 @@ class _ResultScreenState extends State<ResultScreen> {
                 Icon(Icons.content_copy, size: 14, color: Colors.grey.shade500),
                 const SizedBox(width: 4),
                 Text(
-                  '長押しでコピー',
+                  l.longPressToCopy,
                   style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
                 ),
               ],
@@ -169,7 +172,7 @@ class _ResultScreenState extends State<ResultScreen> {
         children: [
           // タイトル
           Text(
-            'このテキストはどの内容ですか？',
+            AppLocalizations.of(context)!.classificationQuestion,
             style: theme.textTheme.labelLarge,
           ),
           const SizedBox(height: 8),
@@ -180,7 +183,7 @@ class _ResultScreenState extends State<ResultScreen> {
               segments: ClassificationType.values
                   .map((t) => ButtonSegment<ClassificationType>(
                         value: t,
-                        label: Text(t.label),
+                        label: Text(_classificationLabel(t)),
                       ))
                   .toList(),
               selected: {_selectedType},
@@ -198,6 +201,7 @@ class _ResultScreenState extends State<ResultScreen> {
   // ───── アクションボタン ─────
 
   Widget _buildActionButtons(ThemeData theme) {
+    final l = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       decoration: BoxDecoration(
@@ -213,7 +217,7 @@ class _ResultScreenState extends State<ResultScreen> {
               onPressed:
                   widget.ocrText.trim().isEmpty ? null : _onMainAction,
               icon: Icon(_mainActionIcon),
-              label: Text(_mainActionLabel),
+              label: Text(_mainActionLabel(l)),
             ),
           ),
           const SizedBox(height: 8),
@@ -227,7 +231,7 @@ class _ResultScreenState extends State<ResultScreen> {
                       ? null
                       : () => _copyText(context),
                   icon: const Icon(Icons.content_copy, size: 18),
-                  label: const Text('コピー'),
+                  label: Text(l.copy),
                 ),
               ),
               const SizedBox(width: 8),
@@ -238,7 +242,7 @@ class _ResultScreenState extends State<ResultScreen> {
                       ? null
                       : () => _shareText(context),
                   icon: const Icon(Icons.share, size: 18),
-                  label: const Text('共有'),
+                  label: Text(l.share),
                 ),
               ),
             ],
@@ -246,6 +250,18 @@ class _ResultScreenState extends State<ResultScreen> {
         ],
       ),
     );
+  }
+
+  String _classificationLabel(ClassificationType t) {
+    final l = AppLocalizations.of(context)!;
+    switch (t) {
+      case ClassificationType.product:
+        return l.classificationProduct;
+      case ClassificationType.text:
+        return l.classificationText;
+      case ClassificationType.other:
+        return l.classificationOther;
+    }
   }
 
   IconData get _mainActionIcon {
@@ -259,14 +275,14 @@ class _ResultScreenState extends State<ResultScreen> {
     }
   }
 
-  String get _mainActionLabel {
+  String _mainActionLabel(AppLocalizations l) {
     switch (_selectedType) {
       case ClassificationType.product:
-        return '通販サイトで検索';
+        return l.searchOnShoppingSite;
       case ClassificationType.text:
-        return 'AI に聞く';
+        return l.askAi;
       case ClassificationType.other:
-        return 'テキストをコピー';
+        return l.copyText;
     }
   }
 
@@ -288,19 +304,20 @@ class _ResultScreenState extends State<ResultScreen> {
 
   /// 商品: 通販サイト検索 URL 生成 → 選択して開く
   void _openProductSearch(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final query = ClassificationService.extractProductQuery(widget.ocrText);
     if (query.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('検索クエリを生成できませんでした')),
+        SnackBar(content: Text(l.couldNotGenerateQuery)),
       );
       return;
     }
     final encoded = Uri.encodeComponent(query);
     final sites = [
       _SearchSite('Amazon', 'https://www.amazon.co.jp/s?k=$encoded'),
-      _SearchSite('楽天', 'https://search.rakuten.co.jp/search/mall/$encoded/'),
+      _SearchSite('Rakuten', 'https://search.rakuten.co.jp/search/mall/$encoded/'),
       _SearchSite(
-          'Yahoo!ショッピング', 'https://shopping.yahoo.co.jp/search?p=$encoded'),
+          'Yahoo! Shopping', 'https://shopping.yahoo.co.jp/search?p=$encoded'),
     ];
 
     showModalBottomSheet<void>(
@@ -312,7 +329,7 @@ class _ResultScreenState extends State<ResultScreen> {
             Padding(
               padding: const EdgeInsets.all(16),
               child: Text(
-                '「$query」を検索',
+                l.searchQuery(query),
                 style: Theme.of(ctx).textTheme.titleMedium,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -348,11 +365,12 @@ class _ResultScreenState extends State<ResultScreen> {
 
   /// コピー
   void _copyText(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     Clipboard.setData(ClipboardData(text: widget.ocrText));
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('コピーしました'),
-        duration: Duration(seconds: 1),
+      SnackBar(
+        content: Text(l.copied),
+        duration: const Duration(seconds: 1),
       ),
     );
   }
@@ -443,7 +461,7 @@ class _AiModalSheetState extends State<_AiModalSheet> {
                 children: [
                   const Icon(Icons.smart_toy, size: 24),
                   const SizedBox(width: 8),
-                  Text('AI に聞く',
+                  Text(AppLocalizations.of(context)!.aiModalTitle,
                       style: Theme.of(context).textTheme.titleLarge),
                 ],
               ),
@@ -467,8 +485,8 @@ class _AiModalSheetState extends State<_AiModalSheet> {
                     maxLines: 2,
                     decoration: InputDecoration(
                       hintText: _selectedPrompt == AiPromptType.question
-                          ? '質問を入力してください'
-                          : 'プロンプトを入力してください',
+                          ? AppLocalizations.of(context)!.enterQuestion
+                          : AppLocalizations.of(context)!.enterPrompt,
                       border: const OutlineInputBorder(),
                       counterText: '',
                     ),
@@ -492,7 +510,9 @@ class _AiModalSheetState extends State<_AiModalSheet> {
                             ),
                           )
                         : const Icon(Icons.send),
-                    label: Text(_sending ? '処理中...' : '送信'),
+                    label: Text(_sending
+                        ? AppLocalizations.of(context)!.processing
+                        : AppLocalizations.of(context)!.send),
                   ),
                 ),
 
@@ -523,18 +543,17 @@ class _AiModalSheetState extends State<_AiModalSheet> {
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: Colors.amber.shade200),
           ),
-          child: const Column(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'API Key が未設定です',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                AppLocalizations.of(context)!.apiKeyNotSet,
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Text(
-                '設定画面で OpenAI の API Key を登録すると、'
-                'AI による要約・質問回答・翻訳などが利用できます。',
-                style: TextStyle(fontSize: 13),
+                AppLocalizations.of(context)!.apiKeyNotSetDescription,
+                style: const TextStyle(fontSize: 13),
               ),
             ],
           ),
@@ -547,7 +566,7 @@ class _AiModalSheetState extends State<_AiModalSheet> {
               Navigator.pop(context);
               Navigator.of(widget.parentContext).pushNamed('/settings');
             },
-            child: const Text('設定画面を開く'),
+            child: Text(AppLocalizations.of(context)!.openSettings),
           ),
         ),
       ],
@@ -588,7 +607,7 @@ class _AiModalSheetState extends State<_AiModalSheet> {
           border: Border.all(color: Colors.red.shade200),
         ),
         child: Text(
-          r.error ?? 'エラーが発生しました',
+          r.error ?? AppLocalizations.of(context)!.errorOccurred,
           style: TextStyle(color: Colors.red.shade800, fontSize: 13),
         ),
       );
@@ -608,7 +627,7 @@ class _AiModalSheetState extends State<_AiModalSheet> {
           Row(
             children: [
               Text(
-                'AI の回答',
+                AppLocalizations.of(context)!.aiResponse,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.green.shade800,
@@ -621,13 +640,13 @@ class _AiModalSheetState extends State<_AiModalSheet> {
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: r.text));
                   ScaffoldMessenger.of(widget.parentContext).showSnackBar(
-                    const SnackBar(
-                      content: Text('AI の回答をコピーしました'),
+                    SnackBar(
+                      content: Text(AppLocalizations.of(context)!.aiResponseCopied),
                       duration: Duration(seconds: 1),
                     ),
                   );
                 },
-                tooltip: 'コピー',
+                tooltip: AppLocalizations.of(context)!.copy,
                 visualDensity: VisualDensity.compact,
               ),
             ],
@@ -663,7 +682,7 @@ class _AiModalSheetState extends State<_AiModalSheet> {
     if (_selectedPrompt.needsUserInput &&
         _inputController.text.trim().isEmpty) {
       ScaffoldMessenger.of(widget.parentContext).showSnackBar(
-        const SnackBar(content: Text('テキストを入力してください')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.pleaseEnterText)),
       );
       return;
     }

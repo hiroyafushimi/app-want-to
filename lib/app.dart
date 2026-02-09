@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+
+import 'l10n/app_localizations.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/region_select_screen.dart';
 import 'screens/settings_screen.dart';
@@ -79,6 +82,8 @@ class _WanToAppState extends State<WanToApp> {
     return MaterialApp(
       navigatorKey: _navigatorKey,
       title: 'Wan to',
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
@@ -103,11 +108,24 @@ class _WanToAppState extends State<WanToApp> {
 class _PlaceholderHome extends StatelessWidget {
   const _PlaceholderHome();
 
+  Future<void> _pickImage(BuildContext context) async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: ImageSource.gallery);
+    if (picked == null) return;
+    if (!context.mounted) return;
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => RegionSelectScreen(imagePath: picked.path),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Wan to'),
+        title: Text(l.appTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -115,8 +133,32 @@ class _PlaceholderHome extends StatelessWidget {
           ),
         ],
       ),
-      body: const Center(
-        child: Text('共有シートから画像を受信して起動します。'),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.photo_library_outlined, size: 64, color: Colors.blue),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: FilledButton.icon(
+                  onPressed: () => _pickImage(context),
+                  icon: const Icon(Icons.image),
+                  label: Text(l.homePickImage),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                l.homeOrShareHint,
+                style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

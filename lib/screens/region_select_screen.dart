@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+import '../l10n/app_localizations.dart';
 import '../services/classification_service.dart';
 import '../services/ocr_service.dart';
 import '../services/usage_service.dart';
@@ -27,6 +28,9 @@ class RegionSelectScreen extends StatefulWidget {
 class _RegionSelectScreenState extends State<RegionSelectScreen> {
   /// 画像キー（切り出し用）
   final GlobalKey _imageKey = GlobalKey();
+
+  /// ドラッグ領域キー（座標変換用）
+  final GlobalKey _gestureKey = GlobalKey();
 
   /// ドラッグ開始点（画像ウィジェット座標系）
   Offset? _start;
@@ -53,22 +57,24 @@ class _RegionSelectScreenState extends State<RegionSelectScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+
     if (widget.imagePath == null || !File(widget.imagePath!).existsSync()) {
       return Scaffold(
-        appBar: AppBar(title: const Text('範囲指定')),
-        body: const Center(child: Text('画像が指定されていません。')),
+        appBar: AppBar(title: Text(l.regionSelect)),
+        body: Center(child: Text(l.noImageSpecified)),
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('範囲指定'),
+        title: Text(l.regionSelect),
         actions: [
           // リセット
           if (_hasSelection)
             IconButton(
               icon: const Icon(Icons.refresh),
-              tooltip: 'やり直す',
+              tooltip: l.resetTooltip,
               onPressed: () => setState(() {
                 _start = null;
                 _end = null;
@@ -76,7 +82,7 @@ class _RegionSelectScreenState extends State<RegionSelectScreen> {
             ),
           IconButton(
             icon: const Icon(Icons.settings),
-            tooltip: '設定',
+            tooltip: l.settingsTooltip,
             onPressed: () => Navigator.of(context).pushNamed('/settings'),
           ),
         ],
@@ -85,22 +91,24 @@ class _RegionSelectScreenState extends State<RegionSelectScreen> {
         child: Column(
           children: [
             // ───── 説明テキスト ─────
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Text(
-                '指でドラッグして、OCR したい範囲を選択してください',
-                style: TextStyle(fontSize: 14, color: Colors.grey),
+                l.regionSelectInstruction,
+                style: const TextStyle(fontSize: 14, color: Colors.grey),
               ),
             ),
             // ───── 画像 + 選択矩形 ─────
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Center(
-                  child: GestureDetector(
-                    onPanStart: _onPanStart,
-                    onPanUpdate: _onPanUpdate,
-                    onPanEnd: _onPanEnd,
+              child: GestureDetector(
+                key: _gestureKey,
+                behavior: HitTestBehavior.opaque,
+                onPanStart: _onPanStart,
+                onPanUpdate: _onPanUpdate,
+                onPanEnd: _onPanEnd,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Center(
                     child: RepaintBoundary(
                       key: _imageKey,
                       child: Stack(
@@ -144,7 +152,7 @@ class _RegionSelectScreenState extends State<RegionSelectScreen> {
                           ),
                         )
                       : const Icon(Icons.text_fields),
-                  label: Text(_cropping ? '処理中...' : 'OCR 実行'),
+                  label: Text(_cropping ? l.processing : l.ocrExecute),
                 ),
               ),
             ),
@@ -156,8 +164,28 @@ class _RegionSelectScreenState extends State<RegionSelectScreen> {
 
   // ───── ドラッグ ─────
 
+  /// GestureDetector のローカル座標を画像ウィジェット座標に変換・クランプ
+  Offset _toImageLocal(Offset gestureLocal) {
+    final imageBox =
+        _imageKey.currentContext?.findRenderObject() as RenderBox?;
+    final gestureBox =
+        _gestureKey.currentContext?.findRenderObject() as RenderBox?;
+    if (imageBox == null || gestureBox == null) return gestureLocal;
+
+    // GestureDetector ローカル → グローバル → 画像ウィジェットローカル
+    final globalPos = gestureBox.localToGlobal(gestureLocal);
+    final imageLocal = imageBox.globalToLocal(globalPos);
+
+    // 画像領域にクランプ（0 〜 画像ウィジェットサイズ）
+    final size = imageBox.size;
+    return Offset(
+      imageLocal.dx.clamp(0, size.width),
+      imageLocal.dy.clamp(0, size.height),
+    );
+  }
+
   void _onPanStart(DragStartDetails d) {
-    final local = d.localPosition;
+    final local = _toImageLocal(d.localPosition);
     setState(() {
       _start = local;
       _end = local;
@@ -166,7 +194,7 @@ class _RegionSelectScreenState extends State<RegionSelectScreen> {
 
   void _onPanUpdate(DragUpdateDetails d) {
     setState(() {
-      _end = d.localPosition;
+      _end = _toImageLocal(d.localPosition);
     });
   }
 
@@ -233,8 +261,9 @@ class _RegionSelectScreenState extends State<RegionSelectScreen> {
       }
     } catch (e) {
       if (!mounted) return;
+      final l = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('OCR に失敗しました: $e')),
+        SnackBar(content: Text(l.ocrFailed(e.toString()))),
       );
     } finally {
       if (mounted) setState(() => _cropping = false);

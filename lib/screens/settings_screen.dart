@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../l10n/app_localizations.dart';
 import '../services/api_key_storage.dart';
 import '../services/share_debug_log_service.dart';
 import '../services/usage_service.dart';
@@ -36,29 +37,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('設定')),
+      appBar: AppBar(title: Text(l.settings)),
       body: ListView(
         children: [
           // ───── API Key セクション ─────
-          _buildSectionHeader('AI 連携'),
+          _buildSectionHeader(l.aiIntegration),
           ListTile(
             leading: Icon(
               _hasKey ? Icons.vpn_key : Icons.vpn_key_off,
               color: _hasKey ? Colors.green : Colors.grey,
             ),
-            title: const Text('OpenAI API Key'),
+            title: Text(l.openaiApiKey),
             subtitle: Text(
               _loading
-                  ? '読み込み中...'
+                  ? l.loadingKey
                   : _hasKey
-                      ? '設定済み（${ApiKeyStorage.mask("key")}）'
-                      : '未設定',
+                      ? l.keySet(ApiKeyStorage.mask('key'))
+                      : l.keyNotSet,
             ),
             trailing: _hasKey
                 ? IconButton(
                     icon: const Icon(Icons.delete_outline, color: Colors.red),
-                    tooltip: '削除',
+                    tooltip: l.deleteTooltip,
                     onPressed: _confirmDeleteKey,
                   )
                 : null,
@@ -73,26 +75,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   color: Colors.blue.shade50,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Text(
-                  'OpenAI の API Key を設定すると、OCR テキストの要約・質問回答・翻訳などが利用できます。\n'
-                  'API Key は端末内に暗号化保存され、OpenAI 以外には送信されません。',
-                  style: TextStyle(fontSize: 13, color: Colors.black87),
+                child: Text(
+                  l.apiKeyInfo,
+                  style: const TextStyle(fontSize: 13, color: Colors.black87),
                 ),
               ),
             ),
           const Divider(height: 32),
 
           // ───── 利用状況セクション ─────
-          _buildSectionHeader('利用状況（無料プラン）'),
-          _buildUsageTile(),
+          _buildSectionHeader(l.usageSection),
+          _buildUsageTile(l),
           const Divider(height: 32),
 
           // ───── デバッグセクション ─────
-          _buildSectionHeader('デバッグ'),
+          _buildSectionHeader(l.debugSection),
           ListTile(
             leading: const Icon(Icons.bug_report_outlined),
-            title: const Text('共有デバッグログ（iOS）'),
-            subtitle: const Text('Share Extension のログを確認'),
+            title: Text(l.shareDebugLog),
+            subtitle: Text(l.shareDebugLogSubtitle),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
                 builder: (_) => const _ShareDebugLogScreen(),
@@ -104,7 +105,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildUsageTile() {
+  Widget _buildUsageTile(AppLocalizations l) {
     final usage = UsageService.instance;
     final ocrRemaining = usage.remainingOcr;
     final aiRemaining = usage.remainingAi;
@@ -116,7 +117,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Expanded(
             child: _UsageCard(
               icon: Icons.text_fields,
-              label: 'OCR',
+              label: l.usageOcr,
               remaining: ocrRemaining,
               total: UsageService.freeOcrLimit,
             ),
@@ -125,7 +126,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Expanded(
             child: _UsageCard(
               icon: Icons.smart_toy,
-              label: 'AI',
+              label: l.usageAi,
               remaining: aiRemaining,
               total: UsageService.freeAiLimit,
             ),
@@ -152,17 +153,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
   // ───── API Key 入力ダイアログ ─────
 
   void _showApiKeyInput(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final controller = TextEditingController();
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('OpenAI API Key'),
+        title: Text(l.openaiApiKey),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'sk-... で始まるキーを入力してください。',
+              'sk-... ',
               style: TextStyle(fontSize: 13, color: Colors.grey),
             ),
             const SizedBox(height: 12),
@@ -181,7 +183,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('キャンセル'),
+            child: Text(l.cancel),
           ),
           FilledButton(
             onPressed: () async {
@@ -192,11 +194,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               _loadKeyStatus();
               if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('API Key を保存しました')),
+                  SnackBar(content: Text(l.apiKeySaved)),
                 );
               }
             },
-            child: const Text('保存'),
+            child: Text(l.save),
           ),
         ],
       ),
@@ -206,15 +208,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
   // ───── API Key 削除確認 ─────
 
   void _confirmDeleteKey() {
+    final l = AppLocalizations.of(context)!;
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('API Key を削除'),
-        content: const Text('保存されている API Key を削除しますか？\nAI 機能が使えなくなります。'),
+        title: Text(l.deleteApiKey),
+        content: Text(l.deleteApiKeyConfirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('キャンセル'),
+            child: Text(l.cancel),
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
@@ -224,11 +227,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               _loadKeyStatus();
               if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('API Key を削除しました')),
+                  SnackBar(content: Text(l.apiKeyDeleted)),
                 );
               }
             },
-            child: const Text('削除'),
+            child: Text(l.delete),
           ),
         ],
       ),
@@ -253,6 +256,7 @@ class _UsageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final isUnlimited = remaining < 0;
     final ratio = isUnlimited ? 1.0 : remaining / total;
     final color = isUnlimited
@@ -275,7 +279,9 @@ class _UsageCard extends StatelessWidget {
           Text(label, style: TextStyle(fontWeight: FontWeight.bold, color: color)),
           const SizedBox(height: 4),
           Text(
-            isUnlimited ? '無制限' : '残り $remaining / $total 回',
+            isUnlimited
+                ? l.usageUnlimited
+                : l.usageRemaining(remaining, total),
             style: TextStyle(fontSize: 13, color: color),
           ),
           const SizedBox(height: 4),
@@ -301,18 +307,18 @@ class _ShareDebugLogScreen extends StatefulWidget {
 }
 
 class _ShareDebugLogScreenState extends State<_ShareDebugLogScreen> {
-  String _log = '読み込み中...';
+  String _log = '';
   bool _loading = false;
 
   Future<void> _load() async {
     setState(() {
       _loading = true;
-      _log = '読み込み中...';
+      _log = '';
     });
     final log = await ShareDebugLogService.getShareExtensionDebugLog();
     if (mounted) {
       setState(() {
-        _log = log.isEmpty ? '(空)' : log;
+        _log = log.isEmpty ? '(empty)' : log;
         _loading = false;
       });
     }
@@ -326,9 +332,10 @@ class _ShareDebugLogScreenState extends State<_ShareDebugLogScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('共有デバッグログ'),
+        title: Text(l.shareDebugLogTitle),
         actions: [
           IconButton(
             icon: _loading
@@ -345,7 +352,7 @@ class _ShareDebugLogScreenState extends State<_ShareDebugLogScreen> {
             onPressed: () {
               Clipboard.setData(ClipboardData(text: _log));
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('コピーしました')),
+                SnackBar(content: Text(l.copied)),
               );
             },
           ),

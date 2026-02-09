@@ -1,0 +1,137 @@
+{
+  "@@locale": "ja",
+
+  "appTitle": "Wan to",
+
+  "homeMessage": "共有シートから画像を受信して起動します。",
+
+  "settings": "設定",
+  "settingsTooltip": "設定",
+
+  "receivedImage": "受信画像",
+  "goToRegionSelect": "範囲指定へ",
+  "noImage": "画像がありません。共有シートから画像を送ってください。",
+
+  "regionSelect": "範囲指定",
+  "regionSelectInstruction": "指でドラッグして、読み取りたい範囲を選択してください",
+  "noImageSpecified": "画像が指定されていません。",
+  "resetTooltip": "やり直す",
+  "ocrExecute": "テキストを読み取る",
+  "processing": "処理中...",
+  "ocrFailed": "テキストの読み取りに失敗しました: {error}",
+  "@ocrFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+
+  "ocrResult": "読み取り結果",
+  "textDisplay": "テキスト表示",
+  "imagePreview": "画像プレビュー",
+  "noTextRecognized": "テキストを認識できませんでした",
+  "longPressToCopy": "長押しでコピー",
+  "classificationQuestion": "このテキストはどの内容ですか？",
+
+  "classificationProduct": "商品",
+  "classificationText": "文章",
+  "classificationOther": "その他",
+
+  "searchOnShoppingSite": "通販サイトで検索",
+  "askAi": "AI に聞く",
+  "copyText": "テキストをコピー",
+  "copy": "コピー",
+  "share": "共有",
+  "copied": "コピーしました",
+  "couldNotGenerateQuery": "検索クエリを生成できませんでした",
+  "searchQuery": "「{query}」を検索",
+  "@searchQuery": {
+    "placeholders": {
+      "query": { "type": "String" }
+    }
+  },
+
+  "aiModalTitle": "AI に聞く",
+  "apiKeyNotSet": "API Key が未設定です",
+  "apiKeyNotSetDescription": "設定画面で OpenAI の API Key を登録すると、AI による要約・質問回答・翻訳などが利用できます。",
+  "openSettings": "設定画面を開く",
+  "enterQuestion": "質問を入力してください",
+  "enterPrompt": "プロンプトを入力してください",
+  "send": "送信",
+  "pleaseEnterText": "テキストを入力してください",
+  "aiResponse": "AI の回答",
+  "aiResponseCopied": "AI の回答をコピーしました",
+  "errorOccurred": "エラーが発生しました",
+
+  "aiPromptSummary": "要約",
+  "aiPromptQuestion": "質問回答",
+  "aiPromptTranslate": "翻訳（日→英）",
+  "aiPromptCustom": "カスタム",
+  "aiDescSummary": "300字以内で簡潔に要約",
+  "aiDescQuestion": "テキストについて質問に回答",
+  "aiDescTranslate": "自然な英語に翻訳",
+  "aiDescCustom": "自由にプロンプトを入力",
+
+  "aiIntegration": "AI 連携",
+  "openaiApiKey": "OpenAI API Key",
+  "loadingKey": "読み込み中...",
+  "keySet": "設定済み（{maskedKey}）",
+  "@keySet": {
+    "placeholders": {
+      "maskedKey": { "type": "String" }
+    }
+  },
+  "keyNotSet": "未設定",
+  "deleteTooltip": "削除",
+  "apiKeyInfo": "OpenAI の API Key を設定すると、読み取ったテキストの要約・質問回答・翻訳などが利用できます。\nAPI Key は端末内に暗号化保存され、OpenAI 以外には送信されません。",
+  "cancel": "キャンセル",
+  "save": "保存",
+  "apiKeySaved": "API Key を保存しました",
+  "deleteApiKey": "API Key を削除",
+  "deleteApiKeyConfirm": "保存されている API Key を削除しますか？\nAI 機能が使えなくなります。",
+  "delete": "削除",
+  "apiKeyDeleted": "API Key を削除しました",
+
+  "usageSection": "利用状況（無料プラン）",
+  "usageOcr": "読み取り",
+  "usageAi": "AI",
+  "usageUnlimited": "無制限",
+  "usageRemaining": "残り {remaining} / {total} 回",
+  "@usageRemaining": {
+    "placeholders": {
+      "remaining": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "usageLimitTitle": "{featureName} の上限に達しました",
+  "@usageLimitTitle": {
+    "placeholders": {
+      "featureName": { "type": "String" }
+    }
+  },
+  "usageLimitMessage": "無料プランでは1日 {dailyLimit} 回まで利用できます。\n明日リセットされます。",
+  "@usageLimitMessage": {
+    "placeholders": {
+      "dailyLimit": { "type": "int" }
+    }
+  },
+  "ok": "OK",
+
+  "debugSection": "デバッグ",
+  "shareDebugLog": "共有デバッグログ（iOS）",
+  "shareDebugLogSubtitle": "Share Extension のログを確認",
+  "shareDebugLogTitle": "共有デバッグログ",
+
+  "onboardingSkip": "スキップ",
+  "onboardingNext": "次へ",
+  "onboardingStart": "はじめる",
+  "onboarding1Title": "スクショを共有",
+  "onboarding1Desc": "スクリーンショットを撮って、\n共有シートから「Wan to」を選択します。",
+  "onboarding2Title": "囲んで読み取り",
+  "onboarding2Desc": "指でドラッグして読み取りたい範囲を選択。\n日本語・英語のテキストを自動認識します。",
+  "onboarding3Title": "AI で活用",
+  "onboarding3Desc": "API Key を設定すると、\n要約・翻訳・質問回答などが利用できます。\n（設定は任意、後からでもOK）",
+
+  "homePickImage": "アルバムから画像を選択",
+  "homeOrShareHint": "または共有シートから画像を送ってください"
+}
