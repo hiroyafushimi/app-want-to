@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
+
 /// 共有シート経由起動 → 受信画像表示（仕様 6. 画面フロー 1）
 class ReceivedImageScreen extends StatelessWidget {
   const ReceivedImageScreen({
@@ -19,31 +21,38 @@ class ReceivedImageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+
     Widget imageWidget;
     if (imagePath != null && File(imagePath!).existsSync()) {
       imageWidget = Image.file(
         File(imagePath!),
         fit: BoxFit.contain,
-        errorBuilder: (_, __, ___) => _placeholder(context),
+        errorBuilder: (_, __, ___) => _placeholder(l),
       );
     } else if (imageBytes != null && imageBytes!.isNotEmpty) {
       imageWidget = Image.memory(
         imageBytes!,
         fit: BoxFit.contain,
-        errorBuilder: (_, __, ___) => _placeholder(context),
+        errorBuilder: (_, __, ___) => _placeholder(l),
       );
     } else {
-      imageWidget = _placeholder(context);
+      imageWidget = _placeholder(l);
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('受信画像'),
+        title: Text(l.receivedImage),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            tooltip: l.settingsTooltip,
+            onPressed: () => Navigator.of(context).pushNamed('/settings'),
+          ),
           if (imagePath != null || (imageBytes != null && imageBytes!.isNotEmpty))
             TextButton(
               onPressed: () => _onNext(context),
-              child: const Text('範囲指定へ'),
+              child: Text(l.goToRegionSelect),
             ),
         ],
       ),
@@ -60,9 +69,9 @@ class ReceivedImageScreen extends StatelessWidget {
     );
   }
 
-  Widget _placeholder(BuildContext context) {
-    return const Center(
-      child: Text('画像がありません。共有シートから画像を送ってください。'),
+  Widget _placeholder(AppLocalizations l) {
+    return Center(
+      child: Text(l.noImage),
     );
   }
 
