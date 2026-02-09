@@ -4,4 +4,4 @@ set -e
 cd "$(dirname "$0")/.."
 flutter create . --project-name want_to --org com.wantto
 echo "完了: android/ と ios/ が生成されました。"
-echo "lib/main.dart が上書きされている場合は、WanToApp を起動する内容に戻してください。"
+echo "lib/main.dart が上書きされている場合は、ActClipApp を起動する内容に戻してください。"

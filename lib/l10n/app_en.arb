@@ -1,7 +1,7 @@
 {
   "@@locale": "en",
 
-  "appTitle": "Wan to",
+  "appTitle": "ActClip",
 
   "homeMessage": "Share a screenshot to get started.",
 
@@ -94,12 +94,30 @@
   "onboardingNext": "Next",
   "onboardingStart": "Get Started",
   "onboarding1Title": "Share Screenshots",
-  "onboarding1Desc": "Take a screenshot and\nselect \"Wan to\" from the share sheet.",
+  "onboarding1Desc": "Take a screenshot and\nselect \"ActClip\" from the share sheet.",
   "onboarding2Title": "Select & Read",
   "onboarding2Desc": "Drag to select the area you want to read.\nAutomatically recognizes Japanese & English text.",
   "onboarding3Title": "Use AI",
   "onboarding3Desc": "Set an API Key to unlock\nsummarization, translation, Q&A and more.\n(Optional, you can set it up later)",
 
   "homePickImage": "Pick Image from Album",
-  "homeOrShareHint": "Or share an image from another app"
+  "homeOrShareHint": "Or share an image from another app",
+
+  "paywallTitle": "Upgrade to Premium",
+  "paywallFeature1": "Unlimited reads & AI",
+  "paywallFeature2": "No daily limits",
+  "paywallFeature3": "Priority support",
+  "paywallLifetime": "Lifetime Plan",
+  "paywallLifetimePrice": "{price} (one-time, lifetime)",
+  "paywallRestore": "Restore Purchases",
+  "paywallRestoreSuccess": "Purchases restored",
+  "paywallRestoreNotFound": "No purchases found to restore",
+  "paywallPurchaseSuccess": "Upgrade complete!",
+  "paywallPurchaseFailed": "Purchase failed. Please try again.",
+  "paywallLoading": "Loading plans...",
+  "paywallUnavailable": "Plans unavailable right now.\nPlease try again later.",
+  "planFree": "Free Plan",
+  "planPremium": "Premium",
+  "upgrade": "Upgrade",
+  "usageLimitUpgrade": "Go Premium for unlimited access."
 }

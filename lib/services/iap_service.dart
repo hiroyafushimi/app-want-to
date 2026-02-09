@@ -3,60 +3,133 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
-/// 課金（RevenueCat）ラッパー。
-/// 課金UIを非表示にする必要がある場合は [paywallVisible] を false に設定。
+import 'usage_service.dart';
+
+/// RevenueCat 課金サービス（仕様 1.4: 月額¥480 / 買い切り¥2,200）
+///
+/// Entitlement ID: "premium"
+/// - 月額プラン: "monthly_480"
+/// - 買い切り: "lifetime_2200"
+///
+/// RevenueCat ダッシュボードで上記を設定してください。
 class IAPService {
-  IAPService({
-    required this.paywallVisible,
-    String? revenueCatApiKey,
-  })  : _revenueCatApiKey = revenueCatApiKey,
-        _initialized = false;
+  IAPService._();
+  static final IAPService instance = IAPService._();
 
-  /// 課金・Paywall UI を表示するか。false のときは一切表示しない設計。
-  final bool paywallVisible;
+  /// RevenueCat Entitlement ID
+  static const String entitlementId = 'premium';
 
-  final String? _revenueCatApiKey;
-  bool _initialized;
+  bool _initialized = false;
+  bool _isPremium = false;
 
-  bool get isAvailable => paywallVisible && _revenueCatApiKey != null && _revenueCatApiKey!.isNotEmpty;
+  /// 有料プランか
+  bool get isPremium => _isPremium;
 
-  Future<void> init(String? userId) async {
-    if (!isAvailable) return;
+  /// 初期化
+  Future<void> init() async {
     if (_initialized) return;
-    await Purchases.setLogLevel(LogLevel.error);
-    await Purchases.configure(PurchasesConfiguration(_revenueCatApiKey!));
-    if (userId != null && userId.isNotEmpty) {
-      await Purchases.logIn(userId);
+
+    final apiKey = _apiKeyForPlatform();
+    if (apiKey == null || apiKey.isEmpty) {
+      debugPrint('[IAP] API Key 未設定のためスキップ');
+      return;
     }
-    _initialized = true;
+
+    try {
+      await Purchases.setLogLevel(
+        kDebugMode ? LogLevel.debug : LogLevel.error,
+      );
+      await Purchases.configure(PurchasesConfiguration(apiKey));
+      _initialized = true;
+
+      // 初回チェック
+      await refreshPremiumStatus();
+
+      // 購入状態の変更をリッスン
+      Purchases.addCustomerInfoUpdateListener(_onCustomerInfoUpdated);
+
+      debugPrint('[IAP] 初期化完了 (premium=$_isPremium)');
+    } catch (e) {
+      debugPrint('[IAP] 初期化エラー: $e');
+    }
   }
 
-  /// Offerings を取得（Paywall 表示用）。非表示時は null。
+  /// CustomerInfo 更新コールバック
+  void _onCustomerInfoUpdated(CustomerInfo info) {
+    _updatePremium(info);
+  }
+
+  /// 最新の購入状態を取得
+  Future<void> refreshPremiumStatus() async {
+    if (!_initialized) return;
+    try {
+      final info = await Purchases.getCustomerInfo();
+      _updatePremium(info);
+    } catch (e) {
+      debugPrint('[IAP] ステータス取得エラー: $e');
+    }
+  }
+
+  void _updatePremium(CustomerInfo info) {
+    final wasPremium = _isPremium;
+    _isPremium = info.entitlements.active.containsKey(entitlementId);
+    UsageService.instance.isPremium = _isPremium;
+    if (wasPremium != _isPremium) {
+      debugPrint('[IAP] Premium 状態変更: $_isPremium');
+    }
+  }
+
+  /// Offerings を取得（Paywall 表示用）
   Future<Offerings?> getOfferings() async {
-    if (!isAvailable) return null;
+    if (!_initialized) return null;
     try {
       return await Purchases.getOfferings();
     } catch (e) {
-      if (kDebugMode) debugPrint('getOfferings error: $e');
+      debugPrint('[IAP] Offerings 取得エラー: $e');
       return null;
     }
   }
 
-  /// 有料プラン所持か（月額/買い切り）。非表示時は false を返すか別ロジックで制御可能。
-  Future<bool> get isSubscribed async {
-    if (!isAvailable) return false;
+  /// パッケージを購入
+  Future<bool> purchase(Package package) async {
+    if (!_initialized) return false;
     try {
-      final customerInfo = await Purchases.getCustomerInfo();
-      return customerInfo.entitlements.active.isNotEmpty;
-    } catch (_) {
+      final result = await Purchases.purchasePackage(package);
+      _updatePremium(result);
+      return _isPremium;
+    } on PurchasesErrorCode catch (e) {
+      if (e == PurchasesErrorCode.purchaseCancelledError) {
+        debugPrint('[IAP] 購入キャンセル');
+      } else {
+        debugPrint('[IAP] 購入エラー: $e');
+      }
+      return false;
+    } catch (e) {
+      debugPrint('[IAP] 購入エラー: $e');
       return false;
     }
   }
 
-  /// プラットフォーム別の RevenueCat API Key を渡す用（iOS/Android で異なる場合）
-  static String? apiKeyForPlatform() {
-    if (Platform.isIOS) return null; // TODO: 本番で設定
-    if (Platform.isAndroid) return null; // TODO: 本番で設定
+  /// 購入を復元
+  Future<bool> restore() async {
+    if (!_initialized) return false;
+    try {
+      final info = await Purchases.restorePurchases();
+      _updatePremium(info);
+      return _isPremium;
+    } catch (e) {
+      debugPrint('[IAP] 復元エラー: $e');
+      return false;
+    }
+  }
+
+  /// プラットフォーム別 API Key
+  static String? _apiKeyForPlatform() {
+    // TODO: RevenueCat ダッシュボードで取得した API Key を設定
+    if (Platform.isIOS) return const String.fromEnvironment('RC_IOS_KEY');
+    if (Platform.isAndroid) {
+      return const String.fromEnvironment('RC_ANDROID_KEY');
+    }
     return null;
   }
 }

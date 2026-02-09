@@ -100,7 +100,7 @@ cd /path/to/app-want-to
 flutter create . --project-name want_to --org com.wantto
 ```
 
-- `lib/main.dart` が上書きされた場合は、`runApp(const WanToApp());` で起動する内容に戻してください。
+- `lib/main.dart` が上書きされた場合は、`runApp(const ActClipApp());` で起動する内容に戻してください。
 - または `scripts/create_platforms.sh` を実行しても構いません。
 
 **Android**: 共有用の intent-filter は **すでに追加済み**です（下記「intent-filter とは」参照）。

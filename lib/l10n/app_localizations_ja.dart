@@ -9,7 +9,7 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
-  String get appTitle => 'Wan to';
+  String get appTitle => 'ActClip';
 
   @override
   String get homeMessage => '共有シートから画像を受信して起動します。';
@@ -263,7 +263,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get onboarding1Title => 'スクショを共有';
 
   @override
-  String get onboarding1Desc => 'スクリーンショットを撮って、\n共有シートから「Wan to」を選択します。';
+  String get onboarding1Desc => 'スクリーンショットを撮って、\n共有シートから「ActClip」を選択します。';
 
   @override
   String get onboarding2Title => '囲んで読み取り';
@@ -283,4 +283,57 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get homeOrShareHint => 'または共有シートから画像を送ってください';
+
+  @override
+  String get paywallTitle => 'プレミアムにアップグレード';
+
+  @override
+  String get paywallFeature1 => '読み取り・AI 無制限';
+
+  @override
+  String get paywallFeature2 => '毎日の回数制限なし';
+
+  @override
+  String get paywallFeature3 => '優先サポート';
+
+  @override
+  String get paywallLifetime => '買い切りプラン';
+
+  @override
+  String paywallLifetimePrice(String price) {
+    return '$price（一括・永年）';
+  }
+
+  @override
+  String get paywallRestore => '購入を復元';
+
+  @override
+  String get paywallRestoreSuccess => '購入を復元しました';
+
+  @override
+  String get paywallRestoreNotFound => '復元可能な購入が見つかりませんでした';
+
+  @override
+  String get paywallPurchaseSuccess => 'アップグレードが完了しました！';
+
+  @override
+  String get paywallPurchaseFailed => '購入に失敗しました。もう一度お試しください。';
+
+  @override
+  String get paywallLoading => 'プラン情報を取得中...';
+
+  @override
+  String get paywallUnavailable => '現在プランを取得できません。\nしばらくしてからお試しください。';
+
+  @override
+  String get planFree => '無料プラン';
+
+  @override
+  String get planPremium => 'プレミアム';
+
+  @override
+  String get upgrade => 'アップグレード';
+
+  @override
+  String get usageLimitUpgrade => 'プレミアムなら無制限で使えます。';
 }
