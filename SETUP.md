@@ -1,4 +1,4 @@
-# Wan to プロジェクトセットアップ（SPEC_WANT_TO.md 準拠）
+# ActClip プロジェクトセットアップ（SPEC_WANT_TO.md 準拠）
 
 ## Flutter のインストール（macOS）
 
@@ -22,7 +22,7 @@ flutter doctor
 
 ### flutter doctor で見つかった問題の解消
 
-Flutter 本体のインストールは成功していれば、`flutter doctor` で ✓ が付くのは Flutter と Network のみで、以下が ✗ になることがあります。**Wan to は iOS/Android がメイン**なので、使うプラットフォームに応じて対応してください。
+Flutter 本体のインストールは成功していれば、`flutter doctor` で ✓ が付くのは Flutter と Network のみで、以下が ✗ になることがあります。**ActClip は iOS/Android がメイン**なので、使うプラットフォームに応じて対応してください。
 
 | 項目 | 必要なもの | 手順 |
 |------|------------|------|
@@ -81,7 +81,7 @@ Cursor でプロジェクトを開けばこの MCP が有効になります。�
 ## 実施済み
 
 - **ブランチ**: `feature/project-setup`
-- **パッケージ名**: `want_to`（アプリ名: Wan to / wantTo 等いずれも可）
+- **パッケージ名**: `want_to`（アプリ表示名: ActClip）
 - **pubspec.yaml**: `want_to`、Flutter SDK、`flutter_secure_storage`、`http`、`purchases_flutter`、`receive_sharing_intent`
 - **lib/**:
   - `main.dart` / `app.dart` … ルート、共有インテント受信 → 受信画像画面へ遷移
@@ -165,7 +165,7 @@ flutter create . --project-name want_to --org com.wantto
 </plist>
 ```
 
-Wan to では画像が主なので上記のままで問題ありません。動画も受け取りたい場合は `PHSupportedMediaTypes` に `<string>Video</string>` を追加し、`NSExtensionActivationSupportsMovieWithMaxCount` を追加してください。
+ActClip では画像が主なので上記のままで問題ありません。動画も受け取りたい場合は `PHSupportedMediaTypes` に `<string>Video</string>` を追加し、`NSExtensionActivationSupportsMovieWithMaxCount` を追加してください。
 
 #### 3. Runner の Info.plist に URL スキームと AppGroupId を追加
 
@@ -290,7 +290,7 @@ class ShareViewController: RSIShareViewController {
     // 共有シートの「投稿」ボタンのラベルを変更する場合
     override func presentationAnimationDidFinish() {
         super.presentationAnimationDidFinish()
-        navigationController?.navigationBar.topItem?.rightBarButtonItem?.title = "Wan to で開く"
+        navigationController?.navigationBar.topItem?.rightBarButtonItem?.title = "ActClip で開く"
     }
 }
 ```
@@ -307,7 +307,7 @@ cd ios && pod install && cd ..
 flutter run
 ```
 
-実機またはシミュレータで、写真アプリなどから画像を選択 → 共有 → 「Wan to」（または Share Extension 名）を選び、メインアプリで画像が受け取れることを確認してください。
+実機またはシミュレータで、写真アプリなどから画像を選択 → 共有 → 「ActClip」（または Share Extension 名）を選び、メインアプリで画像が受け取れることを確認してください。
 
 #### よくあるエラーと対処
 
@@ -318,7 +318,7 @@ flutter run
 | Share Extension 追加後にビルドが失敗する | Share Extension の **Build Settings** → **Linking / Other Linker Flags** でメインプロジェクト由来の CocoaPods 設定を削除する |
 | Invalid Bundle. The bundle contains disallowed file 'Frameworks' | [Stack Overflow のこの回答](https://stackoverflow.com/a/25789145/2061365) などで Frameworks の埋め込み方法を確認する |
 | 共有シートにアプリが出ない | Share Extension の **Deployment Target** が Runner と一致しているか、Info.plist の NSExtension 設定を確認する |
-| **Wan to を選ぶと一瞬で消えてメインアプリが開かない** | Share Extension がメインアプリを開く URL に **Extension の Bundle ID**（例: `com.wantto.wantTo.Share-Extension`）を使っているため、Runner がそのスキームを扱えていない。Runner の **Info.plist** の **CFBundleURLTypes** に、`ShareMedia-com.wantto.wantTo.Share-Extension` を**2つ目の URL スキーム**として追加する（プロジェクトの Bundle ID に合わせて変更）。 |
+| **ActClip を選ぶと一瞬で消えてメインアプリが開かない** | Share Extension がメインアプリを開く URL に **Extension の Bundle ID**（例: `com.wantto.wantTo.Share-Extension`）を使っているため、Runner がそのスキームを扱えていない。Runner の **Info.plist** の **CFBundleURLTypes** に、`ShareMedia-com.wantto.wantTo.Share-Extension` を**2つ目の URL スキーム**として追加する（プロジェクトの Bundle ID に合わせて変更）。 |
 
 ---
 
@@ -329,7 +329,7 @@ flutter run
 - **共有シート**（他アプリで「共有」→ アプリを選ぶ）から画像を受け取るには、  
   「`SEND`（1枚）」「`SEND_MULTIPLE`（複数枚）」で **image/\*** を受け取ると宣言する必要があります。
 - これを **AndroidManifest.xml** の MainActivity に `<intent-filter>` として書きます。
-- 書いておくことで、ユーザーが写真アプリなどで画像を「共有」→「Wan to」を選んだときに、Android が Wan to を起動し、`receive_sharing_intent` が画像パスを Flutter に渡します。
+- 書いておくことで、ユーザーが写真アプリなどで画像を「共有」→「ActClip」を選んだときに、Android が ActClip を起動し、`receive_sharing_intent` が画像パスを Flutter に渡します。
 
 **今回の変更**: `android/app/src/main/AndroidManifest.xml` に以下を追加済みです。
 
@@ -337,7 +337,7 @@ flutter run
 - `android.intent.action.SEND_MULTIPLE` ＋ `image/*` … 画像複数枚の共有を受け取る
 - `launchMode="singleTask"` … 共有のたびに新しい画面が積まれないようにする
 
-追加していないと、共有シートに「Wan to」が出ても、受け取った画像をアプリ側で扱えません。
+追加していないと、共有シートに「ActClip」が出ても、受け取った画像をアプリ側で扱えません。
 
 ## 実装順（進行中）
 
@@ -388,7 +388,7 @@ flutter run
 3. デバイス選択の一覧が表示されたら、**iOS のシミュレータまたは実機**の番号を入力して Enter。  
    - 例: `[3]: iPhone 16 (mobile)` と出ていれば `3` と入力。  
    - 実機の場合は名前で「iPhone」などと表示される。
-4. ビルドが終わると、シミュレータまたは実機に Wan to アプリが起動する。  
+4. ビルドが終わると、シミュレータまたは実機に ActClip アプリが起動する。  
    - 「共有シートから画像を受信して起動します。」という画面が出ていれば起動成功。
 
 **iOS が一覧に出ない場合**
@@ -403,21 +403,21 @@ flutter run
    - シミュレータにはサンプル写真が入っていない場合がある。そのときは **Safari** で適当な画像を表示 → 長押し → **画像を保存** で写真に保存してから、写真アプリでその画像を選ぶ。
 3. 選んだ写真を**タップして大きく表示**する。
 4. 画面左下の **共有ボタン**（四角から上向き矢印のアイコン）をタップする。
-5. 共有シートが開いたら、一覧から **「Wan to」**（または Share Extension で付けた名前）を探してタップする。  
+5. 共有シートが開いたら、一覧から **「ActClip」**（または Share Extension で付けた名前）を探してタップする。  
    - 一覧の下の方や「その他」の中にある場合がある。  
    - 出てこない場合は、Share Extension の設定（Info.plist の NSExtension、App Groups、ビルドターゲット）を再確認する。
-6. 「Wan to で開く」などと出た場合はそのボタンをタップする（`shouldAutoRedirect() == true` のとき）。
+6. 「ActClip で開く」などと出た場合はそのボタンをタップする（`shouldAutoRedirect() == true` のとき）。
 
 ### 手順 4: アプリで画像が表示されるか確認する
 
-1. Wan to アプリが前面に切り替わり、**共有した画像が表示された画面**に遷移していれば成功です。
+1. ActClip アプリが前面に切り替わり、**共有した画像が表示された画面**に遷移していれば成功です。
 2. 「受信画像」画面で画像が表示され、「範囲指定へ」などのボタンがあれば、共有シート → 画像表示までの流れは問題ありません。
 
 **うまくいかない場合**
 
 - アプリは起動するが画像が出ない: Share Extension と Runner の **App Group ID** が同じか、**CUSTOM_GROUP_ID** が正しいか確認する。
-- 共有シートに「Wan to」が出ない: Share Extension の **Deployment Target** が Runner と一致しているか、`ios/Share Extension/Info.plist` の NSExtension 設定を確認する。
-- **「Wan to」を選ぶと一瞬で消えてメインアプリが開かない**: iOS の制限で Share Extension からメインアプリを直接開けません。**ローカル通知**で「タップして Wan to で開く」を表示するようにしてあります。共有シートで「Wan to」→「Wan to で開く」のあと、約 1 秒後に通知が出るので、**その通知をタップ**するとメインアプリが開き、共有画像が表示されます。初回のみ、メインアプリ起動時に通知の許可を求めるダイアログが出ます（許可すると通知が表示されます）。
+- 共有シートに「ActClip」が出ない: Share Extension の **Deployment Target** が Runner と一致しているか、`ios/Share Extension/Info.plist` の NSExtension 設定を確認する。
+- **「ActClip」を選ぶと一瞬で消えてメインアプリが開かない**: iOS の制限で Share Extension からメインアプリを直接開けません。**ローカル通知**で「タップして ActClip で開く」を表示するようにしてあります。共有シートで「ActClip」→「ActClip で開く」のあと、約 1 秒後に通知が出るので、**その通知をタップ**するとメインアプリが開き、共有画像が表示されます。初回のみ、メインアプリ起動時に通知の許可を求めるダイアログが出ます（許可すると通知が表示されます）。
 - 実機で「信頼されていないデベロッパ」と出る: 下記「実機で信頼されていないデベロッパと出るとき」を参照。
 
 #### 実機で「信頼されていないデベロッパ」と出るとき
@@ -429,13 +429,13 @@ flutter run
 3. **デベロッパ」APP** の下に、自分の **Apple ID（メールアドレス）** が表示されている行がある。それをタップする。
 4. **「〇〇を信頼」**（〇〇はあなたの Apple ID）をタップする。
 5. 確認ダイアログで **「信頼」** をタップする。
-6. これで Wan to アプリを起動できるようになります。まだ開いていなければ、ホーム画面から Wan to をタップして起動する。
+6. これで ActClip アプリを起動できるようになります。まだ開いていなければ、ホーム画面から ActClip をタップして起動する。
 
 ※ 証明書の有効期限が切れたり、別の Mac / Apple ID でビルドしたりすると、再度「信頼されていないデベロッパ」と出ることがあります。そのときは上記の手順で再度信頼するか、同じ Mac で `flutter run` し直してください。
 
 #### 共有デバッグログの確認（1から詳しい手順）
 
-「Wan to」を選ぶと一瞬で消える・メインアプリが開かないとき、どこで止まっているかをログで確認できます。**iOS シミュレータまたは実機**で、次の順に進めてください。
+「ActClip」を選ぶと一瞬で消える・メインアプリが開かないとき、どこで止まっているかをログで確認できます。**iOS シミュレータまたは実機**で、次の順に進めてください。
 
 **1. アプリを iOS で起動する**
 
@@ -445,7 +445,7 @@ flutter run
    ```
 2. `flutter run` を実行する。
 3. デバイス一覧が表示されたら、**iPhone のシミュレータまたは実機**の番号を入力して Enter（例: `3`）。
-4. ビルドが終わり、Wan to アプリが起動する。「共有シートから画像を受信して起動します。」の画面が出ていれば OK。**このターミナルは閉じずにそのままにしておく**（あとでログが出る）。
+4. ビルドが終わり、ActClip アプリが起動する。「共有シートから画像を受信して起動します。」の画面が出ていれば OK。**このターミナルは閉じずにそのままにしておく**（あとでログが出る）。
 
 **2. 共有操作を再現する（症状を出す）**
 
@@ -453,13 +453,13 @@ flutter run
 2. **写真**アプリを開く。
 3. 写真を 1 枚選んでタップし、大きく表示する。
 4. 画面左下の **共有ボタン**（四角から矢印が出ているアイコン）をタップする。
-5. 共有シートが開いたら、一覧から **「Wan to」** をタップする。
+5. 共有シートが開いたら、一覧から **「ActClip」** をタップする。
 6. 「want to に接続」などが一瞬出て消える、または何も起きない状態を再現する。
-7. その後、**もう一度 Wan to アプリを手動で開く**（ホーム画面のアイコンをタップ）。メインアプリが前面に出ていれば、そのまま次へ。出ていなければ、Dock や App スイッチャーから Wan to を選んで開く。
+7. その後、**もう一度 ActClip アプリを手動で開く**（ホーム画面のアイコンをタップ）。メインアプリが前面に出ていれば、そのまま次へ。出ていなければ、Dock や App スイッチャーから ActClip を選んで開く。
 
 **3. アプリ内で「共有デバッグログ」を開く**
 
-1. Wan to アプリが前面にある状態で、画面右上の **歯車アイコン（設定）** をタップする。
+1. ActClip アプリが前面にある状態で、画面右上の **歯車アイコン（設定）** をタップする。
 2. 設定画面が開いたら、**「共有デバッグログ（iOS）」** の行をタップする。
 3. **「共有デバッグログ」** というタイトルの画面に切り替わり、テキストが表示される（初回は「読み込み中...」のあと、ログまたは「(ログファイルなし)」などになる）。
 
@@ -475,7 +475,7 @@ flutter run
 
 | 順番 | ログの例 | 意味 |
 |------|----------|------|
-| 1 | `[ShareExt] viewDidLoad` | Share Extension が起動した（「Wan to」をタップしたタイミング）。 |
+| 1 | `[ShareExt] viewDidLoad` | Share Extension が起動した（「ActClip」をタップしたタイミング）。 |
 | 2 | `[ShareExt] presentationAnimationDidFinish` | 拡張の画面表示が終わった。このあと約 0.4 秒で「メインアプリを開く」処理が走る。 |
 | 3 | `[ShareExt] openURL(ShareMedia-com.wantto.wantTo://) = true` または `= false` | レスポンダチェーンでメインアプリを開こうとした結果。**true** なら「開く処理は成功」、**false** なら「開けなかった」（ここで止まっている可能性大）。 |
 | 4 | `[ShareExt] viewWillDisappear` | 拡張の画面が閉じる直前。ここでもう一度 openURL を試している。 |
@@ -506,7 +506,7 @@ flutter run
 
 - アプリ内の **共有デバッグログ** 画面で **コピー** をタップする。
 - メールやチャットに貼り付けて送る。または、ログ全文をテキストファイルに保存して添付する。
-- 「いつ・どの操作をしたか」（例: 写真アプリで画像選択 → 共有 → Wan to をタップ → 一瞬で消えた）を一言添えると原因を絞りやすいです。
+- 「いつ・どの操作をしたか」（例: 写真アプリで画像選択 → 共有 → ActClip をタップ → 一瞬で消えた）を一言添えると原因を絞りやすいです。
 
 ここまで確認できたら **B 完了**。次は範囲選択画面の実装（C）に進めます。
 

@@ -5,11 +5,10 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 
 import 'usage_service.dart';
 
-/// RevenueCat 課金サービス（仕様 1.4: 月額¥480 / 買い切り¥2,200）
+/// RevenueCat 課金サービス（買い切り ¥2,200 のみ）
 ///
 /// Entitlement ID: "premium"
-/// - 月額プラン: "monthly_480"
-/// - 買い切り: "lifetime_2200"
+/// Product ID: "lifetime_2200"（Non-Consumable / Lifetime）
 ///
 /// RevenueCat ダッシュボードで上記を設定してください。
 class IAPService {
