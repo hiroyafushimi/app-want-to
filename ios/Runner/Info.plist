@@ -46,7 +46,7 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 		<key>AppGroupId</key>
-	<string>$(CUSTOM_GROUP_ID)</string>
+	<string>group.com.wantto.wantTo</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -55,6 +55,15 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>ShareMedia-$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+			</array>
+		</dict>
+		<!-- Share Extension がメインアプリを開くときに Extension の Bundle ID で URL を組み立てる場合用 -->
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>ShareMedia-com.wantto.wantTo.Share-Extension</string>
 			</array>
 		</dict>
 	</array>

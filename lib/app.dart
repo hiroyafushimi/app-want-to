@@ -27,7 +27,9 @@ class _WanToAppState extends State<WanToApp> {
 
   Future<void> _handleInitialShare() async {
     final list = await _shareIntent.initialMedia;
+    debugPrint('[WanTo] getInitialMedia: ${list.length} 件');
     if (list.isNotEmpty) {
+      debugPrint('[WanTo] 先頭 path: ${list.first.path}');
       _navigateToReceivedImage(list.first.path);
       await ShareIntentService.reset();
     }
@@ -35,6 +37,7 @@ class _WanToAppState extends State<WanToApp> {
 
   void _handleShareStream() {
     _shareIntent.mediaStream.listen((list) {
+      debugPrint('[WanTo] mediaStream: ${list.length} 件');
       if (list.isNotEmpty) {
         _navigateToReceivedImage(list.first.path);
       }
