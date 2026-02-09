@@ -65,7 +65,7 @@ ActClip（以下「本アプリ」）は、ユーザーのプライバシーを�
 
 本プライバシーポリシーに関するご質問がある場合は、以下までお問い合わせください。
 
-- メール: [あなたのメールアドレス]
+- GitHub Issues: https://github.com/hiroyafushimi/app-want-to/issues
 
 ---
 
@@ -134,4 +134,4 @@ This Privacy Policy may be updated from time to time. Changes will be reflected 
 
 If you have questions about this Privacy Policy, please contact:
 
-- Email: [your-email-address]
+- GitHub Issues: https://github.com/hiroyafushimi/app-want-to/issues
