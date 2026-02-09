@@ -1,5 +1,5 @@
-# Uncomment this line to define a global platform for your project
-# platform :ios, '13.0'
+# google_mlkit_text_recognition が iOS 15.5 以上を要求するため明示指定
+platform :ios, '16.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -31,6 +31,8 @@ target 'Runner' do
   use_frameworks!
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+  # 日本語 OCR モデル（google_mlkit_text_recognition はデフォルトで Latin のみ）
+  pod 'GoogleMLKit/TextRecognitionJapanese'
   # Share Extension（Xcode で付けた名前が「Share Extension」の場合）
   target 'Share Extension' do
     inherit! :search_paths
