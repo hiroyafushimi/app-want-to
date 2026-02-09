@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'screens/onboarding_screen.dart';
-import 'screens/received_image_screen.dart';
 import 'screens/region_select_screen.dart';
 import 'screens/settings_screen.dart';
 import 'services/share_intent_service.dart';
@@ -51,7 +50,7 @@ class _WanToAppState extends State<WanToApp> {
     debugPrint('[WanTo] getInitialMedia: ${list.length} 件');
     if (list.isNotEmpty) {
       debugPrint('[WanTo] 先頭 path: ${list.first.path}');
-      _navigateToReceivedImage(list.first.path);
+      _navigateToRegionSelect(list.first.path);
       await ShareIntentService.reset();
     }
   }
@@ -60,16 +59,16 @@ class _WanToAppState extends State<WanToApp> {
     _shareIntent.mediaStream.listen((list) {
       debugPrint('[WanTo] mediaStream: ${list.length} 件');
       if (list.isNotEmpty) {
-        _navigateToReceivedImage(list.first.path);
+        _navigateToRegionSelect(list.first.path);
       }
     });
   }
 
-  void _navigateToReceivedImage(String path) {
+  void _navigateToRegionSelect(String path) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _navigatorKey.currentState?.pushReplacement(
         MaterialPageRoute<void>(
-          builder: (_) => ReceivedImageScreen(imagePath: path),
+          builder: (_) => RegionSelectScreen(imagePath: path),
         ),
       );
     });

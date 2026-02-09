@@ -38,7 +38,6 @@ class ResultScreen extends StatefulWidget {
 
 class _ResultScreenState extends State<ResultScreen> {
   late ClassificationType _selectedType;
-  final TextEditingController _subLabelController = TextEditingController();
   bool _showImage = false;
 
   @override
@@ -49,7 +48,6 @@ class _ResultScreenState extends State<ResultScreen> {
 
   @override
   void dispose() {
-    _subLabelController.dispose();
     super.dispose();
   }
 
@@ -68,6 +66,11 @@ class _ResultScreenState extends State<ResultScreen> {
               tooltip: _showImage ? 'テキスト表示' : '画像プレビュー',
               onPressed: () => setState(() => _showImage = !_showImage),
             ),
+          IconButton(
+            icon: const Icon(Icons.settings),
+            tooltip: '設定',
+            onPressed: () => Navigator.of(context).pushNamed('/settings'),
+          ),
         ],
       ),
       body: SafeArea(
@@ -171,45 +174,25 @@ class _ResultScreenState extends State<ResultScreen> {
           ),
           const SizedBox(height: 8),
           // セグメントボタン（商品/文章/その他）
-          SegmentedButton<ClassificationType>(
-            segments: ClassificationType.values
-                .map((t) => ButtonSegment<ClassificationType>(
-                      value: t,
-                      label: Text(t.label),
-                    ))
-                .toList(),
-            selected: {_selectedType},
-            onSelectionChanged: (s) => setState(() => _selectedType = s.first),
-            showSelectedIcon: false,
-          ),
-          const SizedBox(height: 8),
-          // 小項目フリー入力（100文字まで）
-          TextField(
-            controller: _subLabelController,
-            maxLength: 100,
-            decoration: InputDecoration(
-              hintText: _subLabelHint,
-              isDense: true,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              border: const OutlineInputBorder(),
-              counterText: '',
+          SizedBox(
+            width: double.infinity,
+            child: SegmentedButton<ClassificationType>(
+              segments: ClassificationType.values
+                  .map((t) => ButtonSegment<ClassificationType>(
+                        value: t,
+                        label: Text(t.label),
+                      ))
+                  .toList(),
+              selected: {_selectedType},
+              onSelectionChanged: (s) =>
+                  setState(() => _selectedType = s.first),
+              showSelectedIcon: false,
             ),
           ),
+          const SizedBox(height: 4),
         ],
       ),
     );
-  }
-
-  String get _subLabelHint {
-    switch (_selectedType) {
-      case ClassificationType.product:
-        return '例: 楽天セールページ';
-      case ClassificationType.text:
-        return '例: ブログ引用、質問文';
-      case ClassificationType.other:
-        return '例: Slack メッセージ';
-    }
   }
 
   // ───── アクションボタン ─────

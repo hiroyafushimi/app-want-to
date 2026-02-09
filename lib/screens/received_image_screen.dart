@@ -40,6 +40,11 @@ class ReceivedImageScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('受信画像'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            tooltip: '設定',
+            onPressed: () => Navigator.of(context).pushNamed('/settings'),
+          ),
           if (imagePath != null || (imageBytes != null && imageBytes!.isNotEmpty))
             TextButton(
               onPressed: () => _onNext(context),
