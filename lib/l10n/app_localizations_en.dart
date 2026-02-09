@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Wan to';
+  String get appTitle => 'ActClip';
 
   @override
   String get homeMessage => 'Share a screenshot to get started.';
@@ -266,7 +266,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboarding1Desc =>
-      'Take a screenshot and\nselect \"Wan to\" from the share sheet.';
+      'Take a screenshot and\nselect \"ActClip\" from the share sheet.';
 
   @override
   String get onboarding2Title => 'Select & Read';
@@ -287,4 +287,58 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeOrShareHint => 'Or share an image from another app';
+
+  @override
+  String get paywallTitle => 'Upgrade to Premium';
+
+  @override
+  String get paywallFeature1 => 'Unlimited reads & AI';
+
+  @override
+  String get paywallFeature2 => 'No daily limits';
+
+  @override
+  String get paywallFeature3 => 'Priority support';
+
+  @override
+  String get paywallLifetime => 'Lifetime Plan';
+
+  @override
+  String paywallLifetimePrice(String price) {
+    return '$price (one-time, lifetime)';
+  }
+
+  @override
+  String get paywallRestore => 'Restore Purchases';
+
+  @override
+  String get paywallRestoreSuccess => 'Purchases restored';
+
+  @override
+  String get paywallRestoreNotFound => 'No purchases found to restore';
+
+  @override
+  String get paywallPurchaseSuccess => 'Upgrade complete!';
+
+  @override
+  String get paywallPurchaseFailed => 'Purchase failed. Please try again.';
+
+  @override
+  String get paywallLoading => 'Loading plans...';
+
+  @override
+  String get paywallUnavailable =>
+      'Plans unavailable right now.\nPlease try again later.';
+
+  @override
+  String get planFree => 'Free Plan';
+
+  @override
+  String get planPremium => 'Premium';
+
+  @override
+  String get upgrade => 'Upgrade';
+
+  @override
+  String get usageLimitUpgrade => 'Go Premium for unlimited access.';
 }

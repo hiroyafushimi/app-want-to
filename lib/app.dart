@@ -3,20 +3,21 @@ import 'package:image_picker/image_picker.dart';
 
 import 'l10n/app_localizations.dart';
 import 'screens/onboarding_screen.dart';
+import 'screens/paywall_screen.dart';
 import 'screens/region_select_screen.dart';
 import 'screens/settings_screen.dart';
 import 'services/share_intent_service.dart';
 
-/// Wan to ルートアプリ。
+/// ActClip ルートアプリ。
 /// 共有シート起点・常駐なし（SPEC_WANT_TO.md 準拠）
-class WanToApp extends StatefulWidget {
-  const WanToApp({super.key});
+class ActClipApp extends StatefulWidget {
+  const ActClipApp({super.key});
 
   @override
-  State<WanToApp> createState() => _WanToAppState();
+  State<ActClipApp> createState() => _ActClipAppState();
 }
 
-class _WanToAppState extends State<WanToApp> {
+class _ActClipAppState extends State<ActClipApp> {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   final ShareIntentService _shareIntent = ShareIntentService();
   bool _onboardingDone = true; // デフォルト true でフラッシュ防止
@@ -50,9 +51,9 @@ class _WanToAppState extends State<WanToApp> {
 
   Future<void> _handleInitialShare() async {
     final list = await _shareIntent.initialMedia;
-    debugPrint('[WanTo] getInitialMedia: ${list.length} 件');
+    debugPrint('[ActClip] getInitialMedia: ${list.length} 件');
     if (list.isNotEmpty) {
-      debugPrint('[WanTo] 先頭 path: ${list.first.path}');
+      debugPrint('[ActClip] 先頭 path: ${list.first.path}');
       _navigateToRegionSelect(list.first.path);
       await ShareIntentService.reset();
     }
@@ -60,7 +61,7 @@ class _WanToAppState extends State<WanToApp> {
 
   void _handleShareStream() {
     _shareIntent.mediaStream.listen((list) {
-      debugPrint('[WanTo] mediaStream: ${list.length} 件');
+      debugPrint('[ActClip] mediaStream: ${list.length} 件');
       if (list.isNotEmpty) {
         _navigateToRegionSelect(list.first.path);
       }
@@ -81,7 +82,7 @@ class _WanToAppState extends State<WanToApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: _navigatorKey,
-      title: 'Wan to',
+      title: 'ActClip',
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData(
@@ -100,6 +101,7 @@ class _WanToAppState extends State<WanToApp> {
           return RegionSelectScreen(imagePath: path);
         },
         '/settings': (context) => const SettingsScreen(),
+        '/paywall': (context) => const PaywallScreen(),
       },
     );
   }

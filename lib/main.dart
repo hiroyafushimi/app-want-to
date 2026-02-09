@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'app.dart';
+import 'services/iap_service.dart';
 
-void main() {
-  runApp(const WanToApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await IAPService.instance.init();
+  runApp(const ActClipApp());
 }

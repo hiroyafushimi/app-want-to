@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
+import '../screens/paywall_screen.dart';
 
 /// 日次使用回数管理サービス（仕様 1.4: 無料=OCR 5回/日, AI 1回/日）
 ///
@@ -106,11 +107,36 @@ class UsageService {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l.usageLimitTitle(featureName)),
-        content: Text(l.usageLimitMessage(dailyLimit)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l.usageLimitMessage(dailyLimit)),
+            const SizedBox(height: 8),
+            Text(
+              l.usageLimitUpgrade,
+              style: TextStyle(
+                color: Theme.of(ctx).colorScheme.primary,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
             child: Text(l.ok),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const PaywallScreen(),
+                ),
+              );
+            },
+            child: Text(l.upgrade),
           ),
         ],
       ),

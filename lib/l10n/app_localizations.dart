@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In ja, this message translates to:
-  /// **'Wan to'**
+  /// **'ActClip'**
   String get appTitle;
 
   /// No description provided for @homeMessage.
@@ -581,7 +581,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboarding1Desc.
   ///
   /// In ja, this message translates to:
-  /// **'スクリーンショットを撮って、\n共有シートから「Wan to」を選択します。'**
+  /// **'スクリーンショットを撮って、\n共有シートから「ActClip」を選択します。'**
   String get onboarding1Desc;
 
   /// No description provided for @onboarding2Title.
@@ -619,6 +619,108 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'または共有シートから画像を送ってください'**
   String get homeOrShareHint;
+
+  /// No description provided for @paywallTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'プレミアムにアップグレード'**
+  String get paywallTitle;
+
+  /// No description provided for @paywallFeature1.
+  ///
+  /// In ja, this message translates to:
+  /// **'読み取り・AI 無制限'**
+  String get paywallFeature1;
+
+  /// No description provided for @paywallFeature2.
+  ///
+  /// In ja, this message translates to:
+  /// **'毎日の回数制限なし'**
+  String get paywallFeature2;
+
+  /// No description provided for @paywallFeature3.
+  ///
+  /// In ja, this message translates to:
+  /// **'優先サポート'**
+  String get paywallFeature3;
+
+  /// No description provided for @paywallLifetime.
+  ///
+  /// In ja, this message translates to:
+  /// **'買い切りプラン'**
+  String get paywallLifetime;
+
+  /// No description provided for @paywallLifetimePrice.
+  ///
+  /// In ja, this message translates to:
+  /// **'{price}（一括・永年）'**
+  String paywallLifetimePrice(String price);
+
+  /// No description provided for @paywallRestore.
+  ///
+  /// In ja, this message translates to:
+  /// **'購入を復元'**
+  String get paywallRestore;
+
+  /// No description provided for @paywallRestoreSuccess.
+  ///
+  /// In ja, this message translates to:
+  /// **'購入を復元しました'**
+  String get paywallRestoreSuccess;
+
+  /// No description provided for @paywallRestoreNotFound.
+  ///
+  /// In ja, this message translates to:
+  /// **'復元可能な購入が見つかりませんでした'**
+  String get paywallRestoreNotFound;
+
+  /// No description provided for @paywallPurchaseSuccess.
+  ///
+  /// In ja, this message translates to:
+  /// **'アップグレードが完了しました！'**
+  String get paywallPurchaseSuccess;
+
+  /// No description provided for @paywallPurchaseFailed.
+  ///
+  /// In ja, this message translates to:
+  /// **'購入に失敗しました。もう一度お試しください。'**
+  String get paywallPurchaseFailed;
+
+  /// No description provided for @paywallLoading.
+  ///
+  /// In ja, this message translates to:
+  /// **'プラン情報を取得中...'**
+  String get paywallLoading;
+
+  /// No description provided for @paywallUnavailable.
+  ///
+  /// In ja, this message translates to:
+  /// **'現在プランを取得できません。\nしばらくしてからお試しください。'**
+  String get paywallUnavailable;
+
+  /// No description provided for @planFree.
+  ///
+  /// In ja, this message translates to:
+  /// **'無料プラン'**
+  String get planFree;
+
+  /// No description provided for @planPremium.
+  ///
+  /// In ja, this message translates to:
+  /// **'プレミアム'**
+  String get planPremium;
+
+  /// No description provided for @upgrade.
+  ///
+  /// In ja, this message translates to:
+  /// **'アップグレード'**
+  String get upgrade;
+
+  /// No description provided for @usageLimitUpgrade.
+  ///
+  /// In ja, this message translates to:
+  /// **'プレミアムなら無制限で使えます。'**
+  String get usageLimitUpgrade;
 }
 
 class _AppLocalizationsDelegate

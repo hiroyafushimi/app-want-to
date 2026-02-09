@@ -19,7 +19,7 @@ class ShareViewController: RSIShareViewController {
     override func presentationAnimationDidFinish() {
         super.presentationAnimationDidFinish()
         ShareExtensionDebugLog.append("[ShareExt] presentationAnimationDidFinish")
-        navigationController?.navigationBar.topItem?.rightBarButtonItem?.title = "Wan to で開く"
+        navigationController?.navigationBar.topItem?.rightBarButtonItem?.title = "ActClip で開く"
         // shouldAutoRedirect = true により、プラグインがメインアプリを自動で開く。
         // 通知は不要（自動遷移で画像が表示されるため）。
     }
@@ -49,11 +49,11 @@ class ShareViewController: RSIShareViewController {
     /// ローカル通知を発火させ、タップでメインアプリを開く（App Group のデータはその時点で読める）
     private func scheduleOpenAppNotification() {
         let content = UNMutableNotificationContent()
-        content.title = "Wan to"
+        content.title = "ActClip"
         content.body = "タップして共有した画像を開く"
         content.sound = .default
         content.categoryIdentifier = kShareNotificationCategoryId
-        // ユーザーが「Wan to で開く」をタップしてプラグインが App Group に保存する時間を確保
+        // ユーザーが「ActClip で開く」をタップしてプラグインが App Group に保存する時間を確保
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1.0, repeats: false)
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
         UNUserNotificationCenter.current().add(request) { [weak self] error in

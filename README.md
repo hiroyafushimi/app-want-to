@@ -1,4 +1,4 @@
-# Wan to
+# ActClip
 
 スクショ画像を共有シート経由で受け取り、指で範囲指定 → OCR → テキスト化。内容を分類し、次のアクションを提案・実行するモバイルアプリです。AI はユーザー自身の API Key で外部処理（コストゼロ・セキュリティ最優先）。
 
@@ -39,7 +39,7 @@ flutter run
 
 ## GitHub セットアップ
 
-1. GitHub で新しいリポジトリを作成（例: `wan-to`）。Initialize with README は不要。
+1. GitHub で新しいリポジトリを作成（例: `act-clip`）。Initialize with README は不要。
 2. リモートを追加してプッシュ:
 
 ```bash

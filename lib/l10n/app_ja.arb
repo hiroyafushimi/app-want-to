@@ -1,7 +1,7 @@
 {
   "@@locale": "ja",
 
-  "appTitle": "Wan to",
+  "appTitle": "ActClip",
 
   "homeMessage": "共有シートから画像を受信して起動します。",
 
@@ -126,12 +126,33 @@
   "onboardingNext": "次へ",
   "onboardingStart": "はじめる",
   "onboarding1Title": "スクショを共有",
-  "onboarding1Desc": "スクリーンショットを撮って、\n共有シートから「Wan to」を選択します。",
+  "onboarding1Desc": "スクリーンショットを撮って、\n共有シートから「ActClip」を選択します。",
   "onboarding2Title": "囲んで読み取り",
   "onboarding2Desc": "指でドラッグして読み取りたい範囲を選択。\n日本語・英語のテキストを自動認識します。",
   "onboarding3Title": "AI で活用",
   "onboarding3Desc": "API Key を設定すると、\n要約・翻訳・質問回答などが利用できます。\n（設定は任意、後からでもOK）",
 
   "homePickImage": "アルバムから画像を選択",
-  "homeOrShareHint": "または共有シートから画像を送ってください"
+  "homeOrShareHint": "または共有シートから画像を送ってください",
+
+  "paywallTitle": "プレミアムにアップグレード",
+  "paywallFeature1": "読み取り・AI 無制限",
+  "paywallFeature2": "毎日の回数制限なし",
+  "paywallFeature3": "優先サポート",
+  "paywallLifetime": "買い切りプラン",
+  "paywallLifetimePrice": "{price}（一括・永年）",
+  "@paywallLifetimePrice": {
+    "placeholders": { "price": { "type": "String" } }
+  },
+  "paywallRestore": "購入を復元",
+  "paywallRestoreSuccess": "購入を復元しました",
+  "paywallRestoreNotFound": "復元可能な購入が見つかりませんでした",
+  "paywallPurchaseSuccess": "アップグレードが完了しました！",
+  "paywallPurchaseFailed": "購入に失敗しました。もう一度お試しください。",
+  "paywallLoading": "プラン情報を取得中...",
+  "paywallUnavailable": "現在プランを取得できません。\nしばらくしてからお試しください。",
+  "planFree": "無料プラン",
+  "planPremium": "プレミアム",
+  "upgrade": "アップグレード",
+  "usageLimitUpgrade": "プレミアムなら無制限で使えます。"
 }

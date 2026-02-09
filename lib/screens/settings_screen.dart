@@ -3,8 +3,10 @@ import 'package:flutter/services.dart';
 
 import '../l10n/app_localizations.dart';
 import '../services/api_key_storage.dart';
+import '../services/iap_service.dart';
 import '../services/share_debug_log_service.dart';
 import '../services/usage_service.dart';
+import 'paywall_screen.dart';
 
 /// 設定画面：API Key入力、残り回数、課金（仕様 6. 画面フロー 5）
 class SettingsScreen extends StatefulWidget {
@@ -83,6 +85,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           const Divider(height: 32),
 
+          // ───── プランセクション ─────
+          _buildPlanTile(l),
+          const Divider(height: 32),
+
           // ───── 利用状況セクション ─────
           _buildSectionHeader(l.usageSection),
           _buildUsageTile(l),
@@ -102,6 +108,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPlanTile(AppLocalizations l) {
+    final isPremium = IAPService.instance.isPremium;
+    return ListTile(
+      leading: Icon(
+        isPremium ? Icons.workspace_premium : Icons.star_outline,
+        color: isPremium ? Colors.amber : Colors.grey,
+        size: 28,
+      ),
+      title: Text(isPremium ? l.planPremium : l.planFree),
+      subtitle: isPremium ? null : Text(l.usageLimitUpgrade),
+      trailing: isPremium
+          ? null
+          : FilledButton(
+              onPressed: () async {
+                final upgraded = await Navigator.of(context).push<bool>(
+                  MaterialPageRoute<bool>(
+                    builder: (_) => const PaywallScreen(),
+                  ),
+                );
+                if (upgraded == true && mounted) {
+                  setState(() {}); // 画面を再描画
+                }
+              },
+              child: Text(l.upgrade),
+            ),
     );
   }
 
