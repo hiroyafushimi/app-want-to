@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../services/ai_service.dart';
 import '../services/api_key_storage.dart';
 import '../services/classification_service.dart';
+import '../services/usage_service.dart';
 
 /// 結果画面（仕様 6. 画面フロー 3）
 ///
@@ -663,6 +664,18 @@ class _AiModalSheetState extends State<_AiModalSheet> {
   Future<void> _onSend() async {
     if (!_hasKey) return;
 
+    // 無料回数チェック
+    final usage = UsageService.instance;
+    if (!usage.canUseAi) {
+      if (!mounted) return;
+      UsageService.showLimitDialog(
+        widget.parentContext,
+        featureName: 'AI',
+        dailyLimit: UsageService.freeAiLimit,
+      );
+      return;
+    }
+
     // フリー入力バリデーション
     if (_selectedPrompt.needsUserInput &&
         _inputController.text.trim().isEmpty) {
@@ -683,6 +696,11 @@ class _AiModalSheetState extends State<_AiModalSheet> {
       promptType: _selectedPrompt,
       userInput: _inputController.text.trim(),
     );
+
+    // 成功時のみ回数消費
+    if (result.success) {
+      usage.consumeAi();
+    }
 
     if (mounted) {
       setState(() {

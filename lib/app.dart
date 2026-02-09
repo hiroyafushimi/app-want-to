@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'screens/onboarding_screen.dart';
 import 'screens/received_image_screen.dart';
 import 'screens/region_select_screen.dart';
 import 'screens/settings_screen.dart';
@@ -17,12 +17,33 @@ class WanToApp extends StatefulWidget {
 class _WanToAppState extends State<WanToApp> {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   final ShareIntentService _shareIntent = ShareIntentService();
+  bool _onboardingDone = true; // デフォルト true でフラッシュ防止
+  bool _loaded = false;
 
   @override
   void initState() {
     super.initState();
+    _checkOnboarding();
     _handleInitialShare();
     _handleShareStream();
+  }
+
+  Future<void> _checkOnboarding() async {
+    // メモリ内で簡易管理（MVP）。本番では SharedPreferences で永続化。
+    if (mounted) {
+      setState(() {
+        _onboardingDone = _onboardingCompleted;
+        _loaded = true;
+      });
+    }
+  }
+
+  // static フラグ（アプリプロセス内で保持）
+  static bool _onboardingCompleted = false;
+
+  void _completeOnboarding() {
+    _onboardingCompleted = true;
+    setState(() => _onboardingDone = true);
   }
 
   Future<void> _handleInitialShare() async {
@@ -63,7 +84,11 @@ class _WanToAppState extends State<WanToApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const _PlaceholderHome(),
+      home: !_loaded
+          ? const Scaffold(body: Center(child: CircularProgressIndicator()))
+          : _onboardingDone
+              ? const _PlaceholderHome()
+              : OnboardingScreen(onComplete: _completeOnboarding),
       routes: {
         '/region_select': (context) {
           final args = ModalRoute.of(context)?.settings.arguments;

@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 
 import '../services/classification_service.dart';
 import '../services/ocr_service.dart';
+import '../services/usage_service.dart';
 import 'result_screen.dart';
 
 /// 範囲指定画面 → 指で囲む → OCR実行（仕様 6. 画面フロー 2）
@@ -178,6 +179,19 @@ class _RegionSelectScreenState extends State<RegionSelectScreen> {
 
   Future<void> _onOcrTap() async {
     if (!_hasSelection) return;
+
+    // 無料回数チェック
+    final usage = UsageService.instance;
+    if (!usage.canUseOcr) {
+      if (!mounted) return;
+      UsageService.showLimitDialog(
+        context,
+        featureName: 'OCR',
+        dailyLimit: UsageService.freeOcrLimit,
+      );
+      return;
+    }
+
     setState(() => _cropping = true);
 
     try {
@@ -193,7 +207,10 @@ class _RegionSelectScreenState extends State<RegionSelectScreen> {
         );
         if (!mounted) return;
 
-        // 3. 分類
+        // 3. OCR 成功 → 回数消費
+        usage.consumeOcr();
+
+        // 4. 分類
         final classification = ClassificationService.classify(result.text);
 
         // 4. 結果画面へ遷移

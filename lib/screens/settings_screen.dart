@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../services/api_key_storage.dart';
 import '../services/share_debug_log_service.dart';
+import '../services/usage_service.dart';
 
 /// 設定画面：API Key入力、残り回数、課金（仕様 6. 画面フロー 5）
 class SettingsScreen extends StatefulWidget {
@@ -81,6 +82,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           const Divider(height: 32),
 
+          // ───── 利用状況セクション ─────
+          _buildSectionHeader('利用状況（無料プラン）'),
+          _buildUsageTile(),
+          const Divider(height: 32),
+
           // ───── デバッグセクション ─────
           _buildSectionHeader('デバッグ'),
           ListTile(
@@ -91,6 +97,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
               MaterialPageRoute<void>(
                 builder: (_) => const _ShareDebugLogScreen(),
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUsageTile() {
+    final usage = UsageService.instance;
+    final ocrRemaining = usage.remainingOcr;
+    final aiRemaining = usage.remainingAi;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: _UsageCard(
+              icon: Icons.text_fields,
+              label: 'OCR',
+              remaining: ocrRemaining,
+              total: UsageService.freeOcrLimit,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: _UsageCard(
+              icon: Icons.smart_toy,
+              label: 'AI',
+              remaining: aiRemaining,
+              total: UsageService.freeAiLimit,
             ),
           ),
         ],
@@ -193,6 +230,61 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
             child: const Text('削除'),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+// ───── 使用回数カード ─────
+
+class _UsageCard extends StatelessWidget {
+  const _UsageCard({
+    required this.icon,
+    required this.label,
+    required this.remaining,
+    required this.total,
+  });
+
+  final IconData icon;
+  final String label;
+  final int remaining;
+  final int total;
+
+  @override
+  Widget build(BuildContext context) {
+    final isUnlimited = remaining < 0;
+    final ratio = isUnlimited ? 1.0 : remaining / total;
+    final color = isUnlimited
+        ? Colors.green
+        : remaining == 0
+            ? Colors.red
+            : Colors.blue;
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: color, size: 28),
+          const SizedBox(height: 4),
+          Text(label, style: TextStyle(fontWeight: FontWeight.bold, color: color)),
+          const SizedBox(height: 4),
+          Text(
+            isUnlimited ? '無制限' : '残り $remaining / $total 回',
+            style: TextStyle(fontSize: 13, color: color),
+          ),
+          const SizedBox(height: 4),
+          if (!isUnlimited)
+            LinearProgressIndicator(
+              value: ratio,
+              backgroundColor: color.withValues(alpha: 0.15),
+              valueColor: AlwaysStoppedAnimation<Color>(color),
+            ),
         ],
       ),
     );
