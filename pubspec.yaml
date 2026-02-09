@@ -1,0 +1,23 @@
+name: want_to
+description: スクショ→共有シート→範囲OCR→分類→アクション提案。AIはユーザーAPI Keyで外部処理。
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_secure_storage: ^9.0.0
+  http: ^1.1.0
+  purchases_flutter: ^6.0.0
+  receive_sharing_intent: ^1.8.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
