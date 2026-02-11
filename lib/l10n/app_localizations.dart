@@ -530,30 +530,6 @@ abstract class AppLocalizations {
   /// **'OK'**
   String get ok;
 
-  /// No description provided for @debugSection.
-  ///
-  /// In ja, this message translates to:
-  /// **'デバッグ'**
-  String get debugSection;
-
-  /// No description provided for @shareDebugLog.
-  ///
-  /// In ja, this message translates to:
-  /// **'共有デバッグログ（iOS）'**
-  String get shareDebugLog;
-
-  /// No description provided for @shareDebugLogSubtitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'Share Extension のログを確認'**
-  String get shareDebugLogSubtitle;
-
-  /// No description provided for @shareDebugLogTitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'共有デバッグログ'**
-  String get shareDebugLogTitle;
-
   /// No description provided for @onboardingSkip.
   ///
   /// In ja, this message translates to:

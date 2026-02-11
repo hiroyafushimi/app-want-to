@@ -241,18 +241,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ok => 'OK';
 
   @override
-  String get debugSection => 'Debug';
-
-  @override
-  String get shareDebugLog => 'Share Debug Log (iOS)';
-
-  @override
-  String get shareDebugLogSubtitle => 'View Share Extension logs';
-
-  @override
-  String get shareDebugLogTitle => 'Share Debug Log';
-
-  @override
   String get onboardingSkip => 'Skip';
 
   @override

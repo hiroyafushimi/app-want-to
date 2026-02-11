@@ -239,18 +239,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get ok => 'OK';
 
   @override
-  String get debugSection => 'デバッグ';
-
-  @override
-  String get shareDebugLog => '共有デバッグログ（iOS）';
-
-  @override
-  String get shareDebugLogSubtitle => 'Share Extension のログを確認';
-
-  @override
-  String get shareDebugLogTitle => '共有デバッグログ';
-
-  @override
   String get onboardingSkip => 'スキップ';
 
   @override

@@ -13,12 +13,10 @@ class ShareViewController: RSIShareViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        ShareExtensionDebugLog.append("[ShareExt] viewDidLoad")
     }
 
     override func presentationAnimationDidFinish() {
         super.presentationAnimationDidFinish()
-        ShareExtensionDebugLog.append("[ShareExt] presentationAnimationDidFinish")
         navigationController?.navigationBar.topItem?.rightBarButtonItem?.title = "ActClip で開く"
         // shouldAutoRedirect = true により、プラグインがメインアプリを自動で開く。
         // 通知は不要（自動遷移で画像が表示されるため）。
@@ -26,7 +24,6 @@ class ShareViewController: RSIShareViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        ShareExtensionDebugLog.append("[ShareExt] viewWillDisappear")
     }
 
     private func openMainAppViaResponderChain() -> Bool {
@@ -58,40 +55,10 @@ class ShareViewController: RSIShareViewController {
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
         UNUserNotificationCenter.current().add(request) { [weak self] error in
             if let e = error {
-                ShareExtensionDebugLog.append("[ShareExt] 通知スケジュール失敗: \(e.localizedDescription)")
+                print("[ShareExt] 通知スケジュール失敗: \(e.localizedDescription)")
             } else {
-                ShareExtensionDebugLog.append("[ShareExt] 通知をスケジュールした（タップでアプリが開く）")
+                // 通知スケジュール成功
             }
         }
-    }
-}
-
-/// App Group にデバッグログを追記（メインアプリから読み出し可能）
-enum ShareExtensionDebugLog {
-    private static let filename = "share_extension_debug.log"
-
-    static func append(_ line: String) {
-        let full = "\(iso8601())\t\(line)\n"
-        guard let container = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: kAppGroupId) else {
-            return
-        }
-        let fileURL = container.appendingPathComponent(filename)
-        if let data = full.data(using: .utf8) {
-            if FileManager.default.fileExists(atPath: fileURL.path) {
-                if let f = FileHandle(forWritingAtPath: fileURL.path) {
-                    f.seekToEndOfFile()
-                    f.write(data)
-                    try? f.close()
-                }
-            } else {
-            try? data.write(to: fileURL)
-            }
-        }
-    }
-
-    private static func iso8601() -> String {
-        let f = ISO8601DateFormatter()
-        f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        return f.string(from: Date())
     }
 }

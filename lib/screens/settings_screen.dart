@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import '../l10n/app_localizations.dart';
 import '../services/api_key_storage.dart';
 import '../services/iap_service.dart';
-import '../services/share_debug_log_service.dart';
 import '../services/usage_service.dart';
 import 'paywall_screen.dart';
 
@@ -92,20 +91,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // ───── 利用状況セクション ─────
           _buildSectionHeader(l.usageSection),
           _buildUsageTile(l),
-          const Divider(height: 32),
-
-          // ───── デバッグセクション ─────
-          _buildSectionHeader(l.debugSection),
-          ListTile(
-            leading: const Icon(Icons.bug_report_outlined),
-            title: Text(l.shareDebugLog),
-            subtitle: Text(l.shareDebugLogSubtitle),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const _ShareDebugLogScreen(),
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -331,74 +316,3 @@ class _UsageCard extends StatelessWidget {
   }
 }
 
-// ───── 共有デバッグログ画面（既存） ─────
-
-class _ShareDebugLogScreen extends StatefulWidget {
-  const _ShareDebugLogScreen();
-
-  @override
-  State<_ShareDebugLogScreen> createState() => _ShareDebugLogScreenState();
-}
-
-class _ShareDebugLogScreenState extends State<_ShareDebugLogScreen> {
-  String _log = '';
-  bool _loading = false;
-
-  Future<void> _load() async {
-    setState(() {
-      _loading = true;
-      _log = '';
-    });
-    final log = await ShareDebugLogService.getShareExtensionDebugLog();
-    if (mounted) {
-      setState(() {
-        _log = log.isEmpty ? '(empty)' : log;
-        _loading = false;
-      });
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context)!;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l.shareDebugLogTitle),
-        actions: [
-          IconButton(
-            icon: _loading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.refresh),
-            onPressed: _loading ? null : _load,
-          ),
-          IconButton(
-            icon: const Icon(Icons.copy),
-            onPressed: () {
-              Clipboard.setData(ClipboardData(text: _log));
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l.copied)),
-              );
-            },
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: SelectableText(
-          _log,
-          style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
-        ),
-      ),
-    );
-  }
-}

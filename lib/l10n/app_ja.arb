@@ -117,11 +117,6 @@
   },
   "ok": "OK",
 
-  "debugSection": "デバッグ",
-  "shareDebugLog": "共有デバッグログ（iOS）",
-  "shareDebugLogSubtitle": "Share Extension のログを確認",
-  "shareDebugLogTitle": "共有デバッグログ",
-
   "onboardingSkip": "スキップ",
   "onboardingNext": "次へ",
   "onboardingStart": "はじめる",

@@ -85,11 +85,6 @@
   "usageLimitMessage": "Free plan allows {dailyLimit} uses per day.\nResets tomorrow.",
   "ok": "OK",
 
-  "debugSection": "Debug",
-  "shareDebugLog": "Share Debug Log (iOS)",
-  "shareDebugLogSubtitle": "View Share Extension logs",
-  "shareDebugLogTitle": "Share Debug Log",
-
   "onboardingSkip": "Skip",
   "onboardingNext": "Next",
   "onboardingStart": "Get Started",
