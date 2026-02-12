@@ -13,7 +13,8 @@ Phase 1: ストア側の準備（Apple / Google）
   ├── A. App Store Connect（iOS）      … セクション 1
   │     ├─ 1-1. アプリを作成
   │     ├─ 1-2. アプリ内課金を作成
-  │     ├─ 1-3. Shared Secret を取得   ← RevenueCat 登録に必要
+  │     ├─ 1-3. Shared Secret を取得       ← RevenueCat 登録に必要
+  │     ├─ 1-3b. In-App Purchase Key 生成  ← RevenueCat 登録に必須
   │     └─ 1-4. Sandbox テスターを作成
   │
   └── B. Google Play Console（Android） … セクション 2 ⚠️ iOS のみなら後回しOK
@@ -26,7 +27,7 @@ Phase 1: ストア側の準備（Apple / Google）
 
 Phase 2: RevenueCat の設定            … セクション 3
   ├─ 3-1. アカウント作成 & プロジェクト登録
-  ├─ 3-2. iOS App を登録（← 1-3 の Shared Secret を使用）
+  ├─ 3-2. iOS App を登録（← 1-3 の Shared Secret + 1-3b の In-App Purchase Key を使用）
   ├─ 3-3. Android App を登録（← 2-4 の Service Credentials を使用）⚠️ iOS のみなら省略可
   ├─ 3-4. Product を作成
   ├─ 3-5. Entitlement を作成
@@ -125,6 +126,37 @@ TODO: メタデータ不足となってる
 2. 左メニュー **「一般」** → **「App 情報」**
 3. ページ下部 **「App 用共有シークレット」** → **「管理」** → **「生成」**
 4. 表示された 32 文字のシークレット文字列をコピー → **メモしておく**
+
+### 1-3b. In-App Purchase Key を生成（RevenueCat 必須）
+
+> **RevenueCat SDK v5+ では必須。** この .p8 ファイル・Key ID・Issuer ID がないと RevenueCat にアプリを保存できない。
+
+#### .p8 キーファイルの生成
+
+1. App Store Connect → **「ユーザーとアクセス」** → **「統合」** タブ → **「アプリ内購入」**
+   - 直接リンク: https://appstoreconnect.apple.com/access/integrations/api/subs
+2. **「In-App Purchase キーを生成」**（または「+」ボタン）をクリック
+3. キー名: `RevenueCat`（任意）と入力して生成
+4. **「API キーをダウンロード」** をクリックして `.p8` ファイルを保存
+   - **ダウンロードは 1 回のみ。** 安全な場所に保管すること
+
+#### Issuer ID の確認
+
+5. 同じページの上部に **「Issuer ID」** が表示されている → コピー → **メモしておく**
+   - **Issuer ID が表示されない場合**: 同じ「統合」ページで **「App Store Connect API」** タブを開き、任意の API キーを 1 つ生成する。生成後、ページ上部に Issuer ID が現れる（In-App Purchase キーと共通の値）
+
+#### Key ID の確認
+
+6. 生成したキーの一覧で、キー名の横に表示されている **「キー ID」** をコピー → **メモしておく**
+
+#### まとめ（セクション 3-2 で使用）
+
+| 取得した値 | 形式 | 使う場所 |
+|-----------|------|---------|
+| .p8 ファイル | `AuthKey_XXXXXXXXXX.p8` | RevenueCat にアップロード |
+| Key ID | 10 文字の英数字 | RevenueCat に入力 |
+| Issuer ID | UUID 形式 | RevenueCat に入力 |
+| Shared Secret | 32 文字の英数字 | RevenueCat に入力 |
 
 ### 1-4. Sandbox テスト用 Apple ID を作成
 TODO 一旦後回し
@@ -261,7 +293,7 @@ Google Play に公開する前に、以下の情報が必須:
 
 ## 3. RevenueCat ダッシュボード設定
 
-> **前提**: セクション 1（App Store Connect）の Shared Secret と、セクション 2（Google Play Console）の Service Account JSON を取得済みであること。
+> **前提**: セクション 1（App Store Connect）の Shared Secret・In-App Purchase Key（.p8 / Key ID / Issuer ID）を取得済みであること。Android も同時に進める場合は、セクション 2 の Service Account JSON も必要。
 
 ### 3-1. アカウント作成 & プロジェクト登録
 
@@ -277,9 +309,16 @@ Google Play に公開する前に、以下の情報が必須:
 3. **Apple App Store** を選択し、以下を入力:
    - **App name**: `ActClip`
    - **App Bundle ID**: `com.wantto.wantTo`
-   - **App Store Connect App-Specific Shared Secret**: セクション 1-3 で取得した Shared Secret を貼り付け
-4. 保存すると **Public API Key**（`appl_xxxxxxxx` 形式）が表示される
-5. この API Key を控えておく（`RC_IOS_KEY` として使用）
+4. **「App Store Connect App-Specific Shared Secret」** セクションを開く:
+   - セクション 1-3 で取得した Shared Secret を貼り付け
+5. **「In-app purchase key configuration」** セクションを開く（**必須**）:
+   - セクション 1-3b で取得した `.p8` ファイルをアップロード
+   - **Key ID** を入力
+   - **Issuer ID** を入力
+6. **「Save changes」** をクリック
+   - 「Valid credentials」と表示されれば成功
+7. 保存すると **Public API Key**（`appl_xxxxxxxx` 形式）が表示される
+8. この API Key を控えておく（`RC_IOS_KEY` として使用）
 
 > Public API Key は **API keys** ページからも確認できる。アプリを追加すると自動生成される。
 
