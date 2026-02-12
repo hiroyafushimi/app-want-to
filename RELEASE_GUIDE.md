@@ -16,7 +16,7 @@ Phase 1: ストア側の準備（Apple / Google）
   │     ├─ 1-3. Shared Secret を取得   ← RevenueCat 登録に必要
   │     └─ 1-4. Sandbox テスターを作成
   │
-  └── B. Google Play Console（Android） … セクション 2
+  └── B. Google Play Console（Android） … セクション 2 ⚠️ iOS のみなら後回しOK
         ├─ 2-1. デベロッパーアカウントを作成
         ├─ 2-2. アプリを作成
         ├─ 2-6. 内部テストに App Bundle をアップロード ← 課金商品作成の前提
@@ -27,7 +27,7 @@ Phase 1: ストア側の準備（Apple / Google）
 Phase 2: RevenueCat の設定            … セクション 3
   ├─ 3-1. アカウント作成 & プロジェクト登録
   ├─ 3-2. iOS App を登録（← 1-3 の Shared Secret を使用）
-  ├─ 3-3. Android App を登録（← 2-4 の Service Credentials を使用）
+  ├─ 3-3. Android App を登録（← 2-4 の Service Credentials を使用）⚠️ iOS のみなら省略可
   ├─ 3-4. Product を作成
   ├─ 3-5. Entitlement を作成
   └─ 3-6. Offering を作成
@@ -39,7 +39,7 @@ Phase 3: ビルド & テスト               … セクション 4
 
 その他（任意のタイミングで実行可能）
   ├─ セクション 5: アプリアイコン
-  └─ セクション 6: Android リリース署名
+  └─ セクション 6: Android リリース署名 ⚠️ iOS のみなら不要
 ```
 
 ---
@@ -114,6 +114,8 @@ Phase 3: ビルド & テスト               … セクション 4
 #### ステータス
 
 - 全て入力したら **「提出準備完了」** にする
+TODO: メタデータ不足となってる
+
 
 ### 1-3. Shared Secret を取得（RevenueCat 連携用）
 
@@ -125,7 +127,7 @@ Phase 3: ビルド & テスト               … セクション 4
 4. 表示された 32 文字のシークレット文字列をコピー → **メモしておく**
 
 ### 1-4. Sandbox テスト用 Apple ID を作成
-
+TODO 一旦後回し
 1. App Store Connect → **「ユーザーとアクセス」** → **「Sandbox」** タブ
 2. **「テスター」** → **「+」** で新しいテスト用アカウントを作成
 3. 実機テスト時にこの Sandbox アカウントでサインインして購入テストを行う
@@ -150,7 +152,9 @@ AI features require the user's own OpenAI API Key (optional).
 
 ## 2. Google Play Console の設定（Android）
 
-> **このセクションを先に完了する。** ここで取得する Service Account JSON は、後のセクション 3（RevenueCat）で必要になる。
+> **iOS のみで先にリリースする場合、このセクション全体をスキップして [セクション 3](#3-revenuecat-ダッシュボード設定) へ進んでOK。** Android は後からいつでも追加できる。Android 実機がない場合も課金テストができないため、iOS を優先するのが現実的。
+>
+> Android も同時にリリースする場合は、ここで取得する Service Account JSON がセクション 3（RevenueCat）で必要になるため先に完了させること。
 
 ### 2-1. デベロッパーアカウントを作成
 
@@ -280,6 +284,8 @@ Google Play に公開する前に、以下の情報が必須:
 > Public API Key は **API keys** ページからも確認できる。アプリを追加すると自動生成される。
 
 ### 3-3. App（Android）を登録
+
+> **iOS のみで先にリリースする場合、このステップはスキップ可。** Android を追加する際に実施する。
 
 1. **「Apps & providers」** → **「+ New」** / **「Add app config」**
 2. **Google Play Store** を選択し、以下を入力:
@@ -474,6 +480,8 @@ dart run flutter_launcher_icons
 ---
 
 ## 6. Android リリース署名
+
+> **iOS のみで先にリリースする場合、このセクション全体をスキップしてOK。**
 
 Google Play にリリースするには、デバッグ用ではなくリリース用の署名鍵が必要。
 
