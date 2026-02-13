@@ -59,15 +59,15 @@ Phase 3: ビルド & テスト               … セクション 4
 
 ## 現在のアプリ情報（参照用）
 
-| 項目 | iOS | Android |
-|------|-----|---------|
-| アプリ名 | ActClip | ActClip |
-| Bundle ID / Application ID | `com.wantto.wantTo` | `com.wantto.want_to` |
-| Dart パッケージ名 | `want_to` | `want_to` |
-| RevenueCat Entitlement ID | `premium` | `premium` |
-| RevenueCat Product ID | `lifetime_2200` | `lifetime_2200` |
-| 課金プラン | 買い切り ¥2,200（Non-Consumable） | 買い切り ¥2,200（Non-Consumable） |
-| 環境変数 | `RC_IOS_KEY` | `RC_ANDROID_KEY` |
+| 項目                       | iOS                               | Android                           |
+| -------------------------- | --------------------------------- | --------------------------------- |
+| アプリ名                   | ActClip                           | ActClip                           |
+| Bundle ID / Application ID | `com.wantto.wantTo`               | `com.wantto.want_to`              |
+| Dart パッケージ名          | `want_to`                         | `want_to`                         |
+| RevenueCat Entitlement ID  | `premium`                         | `premium`                         |
+| RevenueCat Product ID      | `lifetime_2200`                   | `lifetime_2200`                   |
+| 課金プラン                 | 買い切り ¥2,200（Non-Consumable） | 買い切り ¥2,200（Non-Consumable） |
+| 環境変数                   | `RC_IOS_KEY`                      | `RC_ANDROID_KEY`                  |
 
 ---
 
@@ -103,10 +103,10 @@ Phase 3: ビルド & テスト               … セクション 4
 
 #### App Store ローカリゼーション
 
-| 言語 | 表示名 | 説明 |
-|------|--------|------|
-| 日本語 | ActClip プレミアム | 読み取り・AI 機能を無制限で利用できます。一括買い切り。 |
-| 英語 | ActClip Premium | Unlimited text recognition & AI features. One-time purchase. |
+| 言語   | 表示名             | 説明                                                         |
+| ------ | ------------------ | ------------------------------------------------------------ |
+| 日本語 | ActClip プレミアム | 読み取り・AI 機能を無制限で利用できます。一括買い切り。      |
+| 英語   | ActClip Premium    | Unlimited text recognition & AI features. One-time purchase. |
 
 #### レビュー用スクリーンショット
 
@@ -115,8 +115,7 @@ Phase 3: ビルド & テスト               … セクション 4
 #### ステータス
 
 - 全て入力したら **「提出準備完了」** にする
-TODO: メタデータ不足となってる
-
+  TODO: メタデータ不足となってる
 
 ### 1-3. Shared Secret を取得（RevenueCat 連携用）
 
@@ -151,15 +150,15 @@ TODO: メタデータ不足となってる
 
 #### まとめ（セクション 3-2 で使用）
 
-| 取得した値 | 形式 | 使う場所 |
-|-----------|------|---------|
-| .p8 ファイル | `AuthKey_XXXXXXXXXX.p8` | RevenueCat にアップロード |
-| Key ID | 10 文字の英数字 | RevenueCat に入力 |
-| Issuer ID | UUID 形式 | RevenueCat に入力 |
-| Shared Secret | 32 文字の英数字 | RevenueCat に入力 |
+| 取得した値    | 形式                    | 使う場所                  |
+| ------------- | ----------------------- | ------------------------- |
+| .p8 ファイル  | `AuthKey_XXXXXXXXXX.p8` | RevenueCat にアップロード |
+| Key ID        | 10 文字の英数字         | RevenueCat に入力         |
+| Issuer ID     | UUID 形式               | RevenueCat に入力         |
+| Shared Secret | 32 文字の英数字         | RevenueCat に入力         |
 
 ### 1-4. Sandbox テスト用 Apple ID を作成
-TODO 一旦後回し
+
 1. App Store Connect → **「ユーザーとアクセス」** → **「Sandbox」** タブ
 2. **「テスター」** → **「+」** で新しいテスト用アカウントを作成
 3. 実機テスト時にこの Sandbox アカウントでサインインして購入テストを行う
@@ -258,11 +257,14 @@ RevenueCat が Google Play のレシートを検証するために必要。
 2. **署名鍵**:
    - 初回は「Google Play アプリ署名を使用する」→ **「続行」**
 3. **App Bundle をアップロード**:
+
    ```bash
    flutter build appbundle --release \
      --dart-define=RC_ANDROID_KEY=goog_xxxxxxxxxxxxxxxx
    ```
+
    - 生成される `build/app/outputs/bundle/release/app-release.aab` をアップロード
+
 4. **リリース名**: `1.0.0`（任意）
 5. **「リリースのレビュー」** → **「内部テストトラックにリリース開始」**
 6. **テスター** タブ → テスト用メーリングリストを作成 → テスターを追加
@@ -271,17 +273,17 @@ RevenueCat が Google Play のレシートを検証するために必要。
 
 Google Play に公開する前に、以下の情報が必須:
 
-| 項目 | 内容 |
-|------|------|
-| アプリ名 | ActClip |
-| 簡単な説明（80 文字以内） | スクショを共有 → 指で囲んでテキスト化。AI で要約・翻訳も。 |
-| 詳しい説明（4000 文字以内） | アプリの機能を詳細に記述 |
-| スクリーンショット | 最低 2 枚（スマホ）。推奨: 16:9 の縦画像 |
-| アプリアイコン | 512 x 512 px PNG（Google Play 用） |
-| フィーチャー グラフィック | 1024 x 500 px PNG/JPG |
-| プライバシーポリシー URL | 必須（カメラ/写真アクセスあるため） |
-| カテゴリ | ツール |
-| コンテンツのレーティング | アンケートに回答して取得 |
+| 項目                        | 内容                                                       |
+| --------------------------- | ---------------------------------------------------------- |
+| アプリ名                    | ActClip                                                    |
+| 簡単な説明（80 文字以内）   | スクショを共有 → 指で囲んでテキスト化。AI で要約・翻訳も。 |
+| 詳しい説明（4000 文字以内） | アプリの機能を詳細に記述                                   |
+| スクリーンショット          | 最低 2 枚（スマホ）。推奨: 16:9 の縦画像                   |
+| アプリアイコン              | 512 x 512 px PNG（Google Play 用）                         |
+| フィーチャー グラフィック   | 1024 x 500 px PNG/JPG                                      |
+| プライバシーポリシー URL    | 必須（カメラ/写真アクセスあるため）                        |
+| カテゴリ                    | ツール                                                     |
+| コンテンツのレーティング    | アンケートに回答して取得                                   |
 
 ### 2-8. レビュー提出時の注意
 
@@ -407,17 +409,13 @@ flutter run --dart-define=RC_ANDROID_KEY=goog_xxxxxxxxxxxxxxxx
       "name": "ActClip (iOS)",
       "request": "launch",
       "type": "dart",
-      "args": [
-        "--dart-define=RC_IOS_KEY=appl_xxxxxxxxxxxxxxxx"
-      ]
+      "args": ["--dart-define=RC_IOS_KEY=appl_xxxxxxxxxxxxxxxx"]
     },
     {
       "name": "ActClip (Android)",
       "request": "launch",
       "type": "dart",
-      "args": [
-        "--dart-define=RC_ANDROID_KEY=goog_xxxxxxxxxxxxxxxx"
-      ]
+      "args": ["--dart-define=RC_ANDROID_KEY=goog_xxxxxxxxxxxxxxxx"]
     }
   ]
 }
@@ -460,12 +458,12 @@ GitHub Actions などの CI/CD では、API Key を **シークレット変数**
 
 ### 5-1. 画像の仕様
 
-| 項目 | iOS | Android (Google Play) |
-|------|-----|----------------------|
-| サイズ | 1024 x 1024 px | 512 x 512 px（アプリ内: 自動リサイズ） |
-| フォーマット | PNG | PNG |
-| 透過 | なし | なし |
-| 角丸 | 不要（iOS が自動適用） | 不要（アダプティブアイコン対応） |
+| 項目         | iOS                    | Android (Google Play)                  |
+| ------------ | ---------------------- | -------------------------------------- |
+| サイズ       | 1024 x 1024 px         | 512 x 512 px（アプリ内: 自動リサイズ） |
+| フォーマット | PNG                    | PNG                                    |
+| 透過         | なし                   | なし                                   |
+| 角丸         | 不要（iOS が自動適用） | 不要（アダプティブアイコン対応）       |
 
 ### 5-2. flutter_launcher_icons で一括設定（推奨）
 
@@ -500,16 +498,19 @@ dart run flutter_launcher_icons
 ```
 
 生成先:
+
 - iOS: `ios/Runner/Assets.xcassets/AppIcon.appiconset/`
 - Android: `android/app/src/main/res/mipmap-*/`
 
 ### 5-3. 手動で設定する場合
 
 **iOS（Xcode）:**
+
 1. `ios/Runner.xcworkspace` を Xcode で開く
 2. **Runner** → **Assets** → **AppIcon** に 1024x1024 画像をドラッグ
 
 **Android（Android Studio）:**
+
 1. `android/` フォルダを Android Studio で開く
 2. `app/src/main/res` を右クリック → **New** → **Image Asset**
 3. **Foreground Layer**: 用意したアイコン画像を選択
@@ -608,68 +609,68 @@ flutter build appbundle --release \
 
 ### RevenueCat（共通）
 
-| # | 確認項目 | 確認場所 |
-|---|---------|----------|
-| 1 | プロジェクト「ActClip」が存在する | ダッシュボード トップ |
-| 2 | Apple App Store の App が登録されている | Apps & providers |
-| 3 | Google Play Store の App が登録されている | Apps & providers |
-| 4 | iOS Product `lifetime_2200` が存在する | Products 一覧 |
-| 5 | Android Product `lifetime_2200_android` が存在する | Products 一覧 |
-| 6 | Entitlement `premium` に両方の Product が紐付いている | Entitlements → premium |
-| 7 | Offering `default` の Lifetime に商品がある | Offerings → default → Packages |
-| 8 | iOS Shared Secret が設定済み | Apps & providers → iOS App Settings |
-| 9 | Android Service Credentials JSON がアップロード済み | Apps & providers → Android App Settings |
+| #   | 確認項目                                              | 確認場所                                |
+| --- | ----------------------------------------------------- | --------------------------------------- |
+| 1   | プロジェクト「ActClip」が存在する                     | ダッシュボード トップ                   |
+| 2   | Apple App Store の App が登録されている               | Apps & providers                        |
+| 3   | Google Play Store の App が登録されている             | Apps & providers                        |
+| 4   | iOS Product `lifetime_2200` が存在する                | Products 一覧                           |
+| 5   | Android Product `lifetime_2200_android` が存在する    | Products 一覧                           |
+| 6   | Entitlement `premium` に両方の Product が紐付いている | Entitlements → premium                  |
+| 7   | Offering `default` の Lifetime に商品がある           | Offerings → default → Packages          |
+| 8   | iOS Shared Secret が設定済み                          | Apps & providers → iOS App Settings     |
+| 9   | Android Service Credentials JSON がアップロード済み   | Apps & providers → Android App Settings |
 
 ### App Store Connect（iOS）
 
-| # | 確認項目 | 確認場所 |
-|---|---------|----------|
-| 10 | アプリ「ActClip」が作成されている | マイ App |
-| 11 | Non-Consumable 商品 `lifetime_2200` がある | アプリ内課金 → 管理 |
-| 12 | 商品の価格が ¥2,200 に設定されている | 商品詳細 → 価格 |
-| 13 | ローカリゼーション（日本語・英語）が入力済み | 商品詳細 |
-| 14 | ステータスが「提出準備完了」 | 商品詳細 |
-| 15 | Sandbox テスターが作成されている | ユーザーとアクセス → Sandbox |
+| #   | 確認項目                                     | 確認場所                     |
+| --- | -------------------------------------------- | ---------------------------- |
+| 10  | アプリ「ActClip」が作成されている            | マイ App                     |
+| 11  | Non-Consumable 商品 `lifetime_2200` がある   | アプリ内課金 → 管理          |
+| 12  | 商品の価格が ¥2,200 に設定されている         | 商品詳細 → 価格              |
+| 13  | ローカリゼーション（日本語・英語）が入力済み | 商品詳細                     |
+| 14  | ステータスが「提出準備完了」                 | 商品詳細                     |
+| 15  | Sandbox テスターが作成されている             | ユーザーとアクセス → Sandbox |
 
 ### Google Play Console（Android）
 
-| # | 確認項目 | 確認場所 |
-|---|---------|----------|
-| 16 | アプリ「ActClip」が作成されている | すべてのアプリ |
-| 17 | アプリ内アイテム `lifetime_2200` が有効 | 収益化 → アプリ内アイテム |
-| 18 | 価格が ¥2,200 に設定されている | アイテム詳細 |
-| 19 | ライセンステスト用アカウントが追加されている | 設定 → ライセンステスト |
-| 20 | Service Account JSON が RevenueCat にアップロード済み | RevenueCat → Android App Settings |
-| 21 | App Bundle が内部テストにアップロード済み | テスト → 内部テスト |
+| #   | 確認項目                                              | 確認場所                          |
+| --- | ----------------------------------------------------- | --------------------------------- |
+| 16  | アプリ「ActClip」が作成されている                     | すべてのアプリ                    |
+| 17  | アプリ内アイテム `lifetime_2200` が有効               | 収益化 → アプリ内アイテム         |
+| 18  | 価格が ¥2,200 に設定されている                        | アイテム詳細                      |
+| 19  | ライセンステスト用アカウントが追加されている          | 設定 → ライセンステスト           |
+| 20  | Service Account JSON が RevenueCat にアップロード済み | RevenueCat → Android App Settings |
+| 21  | App Bundle が内部テストにアップロード済み             | テスト → 内部テスト               |
 
 ### ビルド（iOS）
 
-| # | 確認項目 | 確認方法 |
-|---|---------|----------|
-| 22 | `RC_IOS_KEY` を渡してビルドできる | `flutter run --dart-define=RC_IOS_KEY=appl_xxx` |
-| 23 | Paywall 画面に商品が表示される | アプリ → 設定 → アップグレード |
-| 24 | Sandbox で購入フローが完了する | 実機で Sandbox Apple ID を使用 |
-| 25 | 購入後に「プレミアム」表示になる | 設定画面のプラン表示 |
-| 26 | 「購入を復元」が動作する | Paywall 画面 |
+| #   | 確認項目                          | 確認方法                                        |
+| --- | --------------------------------- | ----------------------------------------------- |
+| 22  | `RC_IOS_KEY` を渡してビルドできる | `flutter run --dart-define=RC_IOS_KEY=appl_xxx` |
+| 23  | Paywall 画面に商品が表示される    | アプリ → 設定 → アップグレード                  |
+| 24  | Sandbox で購入フローが完了する    | 実機で Sandbox Apple ID を使用                  |
+| 25  | 購入後に「プレミアム」表示になる  | 設定画面のプラン表示                            |
+| 26  | 「購入を復元」が動作する          | Paywall 画面                                    |
 
 ### ビルド（Android）
 
-| # | 確認項目 | 確認方法 |
-|---|---------|----------|
-| 27 | `RC_ANDROID_KEY` を渡してビルドできる | `flutter run --dart-define=RC_ANDROID_KEY=goog_xxx` |
-| 28 | Paywall 画面に商品が表示される | アプリ → 設定 → アップグレード |
-| 29 | ライセンステストで購入フローが完了する | 実機でテスト用 Google アカウントを使用 |
-| 30 | 購入後に「プレミアム」表示になる | 設定画面のプラン表示 |
-| 31 | リリース署名でビルドが成功する | `flutter build appbundle --release` |
+| #   | 確認項目                               | 確認方法                                            |
+| --- | -------------------------------------- | --------------------------------------------------- |
+| 27  | `RC_ANDROID_KEY` を渡してビルドできる  | `flutter run --dart-define=RC_ANDROID_KEY=goog_xxx` |
+| 28  | Paywall 画面に商品が表示される         | アプリ → 設定 → アップグレード                      |
+| 29  | ライセンステストで購入フローが完了する | 実機でテスト用 Google アカウントを使用              |
+| 30  | 購入後に「プレミアム」表示になる       | 設定画面のプラン表示                                |
+| 31  | リリース署名でビルドが成功する         | `flutter build appbundle --release`                 |
 
 ### アプリアイコン
 
-| # | 確認項目 | 確認方法 |
-|---|---------|----------|
-| 32 | `assets/icon/app_icon.png` が 1024x1024 | ファイルプロパティ確認 |
-| 33 | `dart run flutter_launcher_icons` が成功する | ターミナルで実行 |
-| 34 | iOS ホーム画面にアイコンが表示される | シミュレータ / 実機 |
-| 35 | Android ホーム画面にアイコンが表示される | エミュレータ / 実機 |
+| #   | 確認項目                                     | 確認方法               |
+| --- | -------------------------------------------- | ---------------------- |
+| 32  | `assets/icon/app_icon.png` が 1024x1024      | ファイルプロパティ確認 |
+| 33  | `dart run flutter_launcher_icons` が成功する | ターミナルで実行       |
+| 34  | iOS ホーム画面にアイコンが表示される         | シミュレータ / 実機    |
+| 35  | Android ホーム画面にアイコンが表示される     | エミュレータ / 実機    |
 
 ---
 
@@ -678,31 +679,37 @@ flutter build appbundle --release \
 ### 共通
 
 #### Paywall に「プランを取得できません」と表示される
+
 - API Key がビルド時に渡されていない → `--dart-define` を確認
 - RevenueCat の Offering にパッケージが紐付いていない → Offerings を確認
 - ストア側の商品がまだ有効になっていない → ステータスを確認
 
 #### 購入後にプレミアムにならない
+
 - RevenueCat の Entitlement `premium` に商品が紐付いているか確認
 - レシート検証用の認証情報が正しく設定されているか確認
 
 ### iOS 固有
 
 #### Sandbox で購入テストができない
+
 - 実機の **設定** → **App Store** → **「Sandbox アカウント」** にサインインしているか確認
 - シミュレータでは課金テストができない（実機必須）
 
 ### Android 固有
 
 #### 「このアイテムはお住まいの国ではご利用いただけません」
+
 - ライセンステスト用アカウントが Google Play Console に追加されていない
 - App Bundle がまだ内部テストにアップロードされていない
 
 #### 「このバージョンのアプリはアプリ内課金に対応していません」
+
 - ビルドのバージョンコードが Google Play にアップロード済みのものと一致していない
 - リリース署名ではなくデバッグ署名でビルドしている → [手順 6](#6-android-リリース署名) を確認
 
 #### Service Credentials が機能しない
+
 - Google Play Console でサービスアカウントに財務権限を付与してから **24〜48 時間** 待つ必要がある
 - Google Cloud Console とGoogle Play Console が同じアカウントでリンクされているか確認
 
@@ -710,15 +717,15 @@ flutter build appbundle --release \
 
 ## 参照リンク
 
-| リソース | URL |
-|---------|-----|
-| RevenueCat ダッシュボード | https://app.revenuecat.com |
-| RevenueCat iOS 設定ガイド | https://docs.revenuecat.com/docs/ios |
-| RevenueCat Android 設定ガイド | https://docs.revenuecat.com/docs/android |
+| リソース                        | URL                                                                |
+| ------------------------------- | ------------------------------------------------------------------ |
+| RevenueCat ダッシュボード       | https://app.revenuecat.com                                         |
+| RevenueCat iOS 設定ガイド       | https://docs.revenuecat.com/docs/ios                               |
+| RevenueCat Android 設定ガイド   | https://docs.revenuecat.com/docs/android                           |
 | RevenueCat Google Play 認証情報 | https://docs.revenuecat.com/docs/creating-play-service-credentials |
-| App Store Connect | https://appstoreconnect.apple.com |
-| Google Play Console | https://play.google.com/console |
-| Apple Developer | https://developer.apple.com |
-| Google Cloud Console | https://console.cloud.google.com |
-| flutter_launcher_icons | https://pub.dev/packages/flutter_launcher_icons |
-| Flutter Android リリース署名 | https://docs.flutter.dev/deployment/android |
+| App Store Connect               | https://appstoreconnect.apple.com                                  |
+| Google Play Console             | https://play.google.com/console                                    |
+| Apple Developer                 | https://developer.apple.com                                        |
+| Google Cloud Console            | https://console.cloud.google.com                                   |
+| flutter_launcher_icons          | https://pub.dev/packages/flutter_launcher_icons                    |
+| Flutter Android リリース署名    | https://docs.flutter.dev/deployment/android                        |
