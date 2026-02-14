@@ -81,6 +81,7 @@ class _ActClipAppState extends State<ActClipApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       navigatorKey: _navigatorKey,
       title: 'ActClip',
       localizationsDelegates: AppLocalizations.localizationsDelegates,
