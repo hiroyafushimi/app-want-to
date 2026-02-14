@@ -48,7 +48,8 @@ enum AiPromptType {
       case AiPromptType.translate:
         return '以下のテキストを自然な英語に翻訳してください。';
       case AiPromptType.custom:
-        return (userInput ?? '').trim();
+        final instruction = (userInput ?? '').trim();
+        return '以下のテキストに対して、次の指示を実行してください。\n指示：$instruction';
     }
   }
 
