@@ -99,9 +99,9 @@
   "homeOrShareHint": "Or share an image from another app",
 
   "paywallTitle": "Upgrade to Premium",
-  "paywallFeature1": "Unlimited reads & AI",
-  "paywallFeature2": "No daily limits",
-  "paywallFeature3": "Priority support",
+  "paywallFeature1": "Unlimited OCR text recognition",
+  "paywallFeature2": "Unlimited AI usage (API Key required)",
+  "paywallFeature3": "No more daily reset limits",
   "paywallLifetime": "Lifetime Plan",
   "paywallLifetimePrice": "{price} (one-time, lifetime)",
   "paywallRestore": "Restore Purchases",
@@ -114,5 +114,5 @@
   "planFree": "Free Plan",
   "planPremium": "Premium",
   "upgrade": "Upgrade",
-  "usageLimitUpgrade": "Go Premium for unlimited access."
+  "usageLimitUpgrade": "Go Premium for unlimited usage."
 }

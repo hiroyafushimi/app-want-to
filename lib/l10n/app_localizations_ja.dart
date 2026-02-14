@@ -276,13 +276,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get paywallTitle => 'プレミアムにアップグレード';
 
   @override
-  String get paywallFeature1 => '読み取り・AI 無制限';
+  String get paywallFeature1 => 'OCR 読み取り回数が無制限';
 
   @override
-  String get paywallFeature2 => '毎日の回数制限なし';
+  String get paywallFeature2 => 'AI 機能も回数無制限（API Key は別途必要）';
 
   @override
-  String get paywallFeature3 => '優先サポート';
+  String get paywallFeature3 => '毎日のリセットを気にせず使える';
 
   @override
   String get paywallLifetime => '買い切りプラン';
@@ -323,5 +323,5 @@ class AppLocalizationsJa extends AppLocalizations {
   String get upgrade => 'アップグレード';
 
   @override
-  String get usageLimitUpgrade => 'プレミアムなら無制限で使えます。';
+  String get usageLimitUpgrade => 'プレミアムなら回数無制限で使えます。';
 }

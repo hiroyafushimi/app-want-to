@@ -131,9 +131,9 @@
   "homeOrShareHint": "または共有シートから画像を送ってください",
 
   "paywallTitle": "プレミアムにアップグレード",
-  "paywallFeature1": "読み取り・AI 無制限",
-  "paywallFeature2": "毎日の回数制限なし",
-  "paywallFeature3": "優先サポート",
+  "paywallFeature1": "OCR 読み取り回数が無制限",
+  "paywallFeature2": "AI 機能も回数無制限（API Key は別途必要）",
+  "paywallFeature3": "毎日のリセットを気にせず使える",
   "paywallLifetime": "買い切りプラン",
   "paywallLifetimePrice": "{price}（一括・永年）",
   "@paywallLifetimePrice": {
@@ -149,5 +149,5 @@
   "planFree": "無料プラン",
   "planPremium": "プレミアム",
   "upgrade": "アップグレード",
-  "usageLimitUpgrade": "プレミアムなら無制限で使えます。"
+  "usageLimitUpgrade": "プレミアムなら回数無制限で使えます。"
 }

@@ -605,19 +605,19 @@ abstract class AppLocalizations {
   /// No description provided for @paywallFeature1.
   ///
   /// In ja, this message translates to:
-  /// **'読み取り・AI 無制限'**
+  /// **'OCR 読み取り回数が無制限'**
   String get paywallFeature1;
 
   /// No description provided for @paywallFeature2.
   ///
   /// In ja, this message translates to:
-  /// **'毎日の回数制限なし'**
+  /// **'AI 機能も回数無制限（API Key は別途必要）'**
   String get paywallFeature2;
 
   /// No description provided for @paywallFeature3.
   ///
   /// In ja, this message translates to:
-  /// **'優先サポート'**
+  /// **'毎日のリセットを気にせず使える'**
   String get paywallFeature3;
 
   /// No description provided for @paywallLifetime.
@@ -695,7 +695,7 @@ abstract class AppLocalizations {
   /// No description provided for @usageLimitUpgrade.
   ///
   /// In ja, this message translates to:
-  /// **'プレミアムなら無制限で使えます。'**
+  /// **'プレミアムなら回数無制限で使えます。'**
   String get usageLimitUpgrade;
 }
 

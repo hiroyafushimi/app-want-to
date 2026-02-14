@@ -280,13 +280,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paywallTitle => 'Upgrade to Premium';
 
   @override
-  String get paywallFeature1 => 'Unlimited reads & AI';
+  String get paywallFeature1 => 'Unlimited OCR text recognition';
 
   @override
-  String get paywallFeature2 => 'No daily limits';
+  String get paywallFeature2 => 'Unlimited AI usage (API Key required)';
 
   @override
-  String get paywallFeature3 => 'Priority support';
+  String get paywallFeature3 => 'No more daily reset limits';
 
   @override
   String get paywallLifetime => 'Lifetime Plan';
@@ -328,5 +328,5 @@ class AppLocalizationsEn extends AppLocalizations {
   String get upgrade => 'Upgrade';
 
   @override
-  String get usageLimitUpgrade => 'Go Premium for unlimited access.';
+  String get usageLimitUpgrade => 'Go Premium for unlimited usage.';
 }
