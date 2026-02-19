@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../l10n/app_localizations.dart';
 import '../services/api_key_storage.dart';
 import '../services/iap_service.dart';
 import '../services/usage_service.dart';
+import '../utils/safe_set_state.dart';
 import 'paywall_screen.dart';
 
 /// 設定画面：API Key入力、残り回数、課金（仕様 6. 画面フロー 5）
@@ -15,7 +15,7 @@ class SettingsScreen extends StatefulWidget {
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends State<SettingsScreen> with SafeSetState {
   final ApiKeyStorage _storage = ApiKeyStorage();
   bool _hasKey = false;
   bool _loading = true;
@@ -28,12 +28,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _loadKeyStatus() async {
     final key = await _storage.read();
-    if (mounted) {
-      setState(() {
-        _hasKey = key != null && key.isNotEmpty;
-        _loading = false;
-      });
-    }
+    safeSetState(() {
+      _hasKey = key != null && key.isNotEmpty;
+      _loading = false;
+    });
   }
 
   @override
@@ -209,13 +207,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
               final key = controller.text.trim();
               if (key.isEmpty) return;
               await _storage.save(key);
-              if (ctx.mounted) Navigator.pop(ctx);
+              if (!ctx.mounted) return;
+              Navigator.pop(ctx);
               _loadKeyStatus();
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(l.apiKeySaved)),
-                );
-              }
+              if (!mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(l.apiKeySaved)),
+              );
             },
             child: Text(l.save),
           ),

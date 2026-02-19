@@ -5,10 +5,13 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+import '../constants/app_constants.dart';
 import '../l10n/app_localizations.dart';
 import '../services/classification_service.dart';
 import '../services/ocr_service.dart';
 import '../services/usage_service.dart';
+import '../utils/safe_set_state.dart';
+import '../utils/usage_limit_dialog.dart';
 import 'result_screen.dart';
 
 /// 範囲指定画面 → 指で囲む → OCR実行（仕様 6. 画面フロー 2）
@@ -25,7 +28,8 @@ class RegionSelectScreen extends StatefulWidget {
   State<RegionSelectScreen> createState() => _RegionSelectScreenState();
 }
 
-class _RegionSelectScreenState extends State<RegionSelectScreen> {
+class _RegionSelectScreenState extends State<RegionSelectScreen>
+    with SafeSetState {
   /// 画像キー（切り出し用）
   final GlobalKey _imageKey = GlobalKey();
 
@@ -45,7 +49,8 @@ class _RegionSelectScreenState extends State<RegionSelectScreen> {
   bool get _hasSelection {
     if (_start == null || _end == null) return false;
     final r = _selectionRect;
-    return r.width > 10 && r.height > 10;
+    return r.width > AppConstants.kMinSelectionSize &&
+        r.height > AppConstants.kMinSelectionSize;
   }
 
   /// 正規化された選択矩形（左上→右下）
@@ -212,53 +217,11 @@ class _RegionSelectScreenState extends State<RegionSelectScreen> {
 
   Future<void> _onOcrTap() async {
     if (!_hasSelection) return;
-
-    // 無料回数チェック
-    final usage = UsageService.instance;
-    if (!usage.canUseOcr) {
-      if (!mounted) return;
-      UsageService.showLimitDialog(
-        context,
-        featureName: 'OCR',
-        dailyLimit: UsageService.freeOcrLimit,
-      );
-      return;
-    }
+    if (!_checkUsageLimit()) return;
 
     setState(() => _cropping = true);
-
     try {
-      // 1. 選択範囲を切り出し
-      final croppedBytes = await _captureSelectedRegion();
-      if (!mounted) return;
-
-      // 2. OCR 実行
-      final ocrService = OcrService();
-      try {
-        final result = await ocrService.recognizeFromBytes(
-          Uint8List.fromList(croppedBytes),
-        );
-        if (!mounted) return;
-
-        // 3. OCR 成功 → 回数消費
-        usage.consumeOcr();
-
-        // 4. 分類
-        final classification = ClassificationService.classify(result.text);
-
-        // 4. 結果画面へ遷移
-        Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => ResultScreen(
-              ocrText: result.text,
-              classification: classification,
-              croppedImageBytes: Uint8List.fromList(croppedBytes),
-            ),
-          ),
-        );
-      } finally {
-        await ocrService.dispose();
-      }
+      await _performOcrAndNavigate();
     } catch (e) {
       if (!mounted) return;
       final l = AppLocalizations.of(context)!;
@@ -266,15 +229,60 @@ class _RegionSelectScreenState extends State<RegionSelectScreen> {
         SnackBar(content: Text(l.ocrFailed(e.toString()))),
       );
     } finally {
-      if (mounted) setState(() => _cropping = false);
+      safeSetState(() => _cropping = false);
+    }
+  }
+
+  /// 無料回数チェック。使用可能なら true、上限到達ならダイアログ表示して false。
+  bool _checkUsageLimit() {
+    if (UsageService.instance.canUseOcr) return true;
+    if (!mounted) return false;
+    showUsageLimitDialog(
+      context,
+      featureName: 'OCR',
+      dailyLimit: UsageService.freeOcrLimit,
+    );
+    return false;
+  }
+
+  /// OCR 実行 → 分類 → 結果画面遷移
+  Future<void> _performOcrAndNavigate() async {
+    final croppedBytes = await _captureSelectedRegion();
+    if (!mounted) return;
+
+    final ocrService = OcrService();
+    try {
+      final result = await ocrService.recognizeFromBytes(
+        Uint8List.fromList(croppedBytes),
+      );
+      if (!mounted) return;
+
+      UsageService.instance.consumeOcr();
+      final classification = ClassificationService.classify(result.text);
+
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => ResultScreen(
+            ocrText: result.text,
+            classification: classification,
+            croppedImageBytes: Uint8List.fromList(croppedBytes),
+          ),
+        ),
+      );
+    } finally {
+      await ocrService.dispose();
     }
   }
 
   /// RepaintBoundary をキャプチャし、選択範囲だけを切り出す
   Future<List<int>> _captureSelectedRegion() async {
-    final boundary = _imageKey.currentContext!.findRenderObject()
-        as RenderRepaintBoundary;
-    final fullImage = await boundary.toImage(pixelRatio: 2.0);
+    final renderObject = _imageKey.currentContext?.findRenderObject();
+    if (renderObject is! RenderRepaintBoundary) {
+      throw StateError('Image widget not found for capture');
+    }
+    final boundary = renderObject;
+    final fullImage =
+        await boundary.toImage(pixelRatio: AppConstants.kCapturePixelRatio);
 
     // ウィジェット座標 → キャプチャ画像座標（pixelRatio 分スケール）
     final scaleX = fullImage.width / boundary.size.width;
@@ -303,7 +311,10 @@ class _RegionSelectScreenState extends State<RegionSelectScreen> {
     );
 
     final byteData = await cropped.toByteData(format: ui.ImageByteFormat.png);
-    return byteData!.buffer.asUint8List();
+    if (byteData == null) {
+      throw StateError('Failed to encode cropped image to PNG');
+    }
+    return byteData.buffer.asUint8List();
   }
 }
 

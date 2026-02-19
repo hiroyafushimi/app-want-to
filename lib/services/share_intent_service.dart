@@ -3,10 +3,14 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
+import '../utils/app_logger.dart';
+
 /// 共有シートから受け取ったメディア（画像）をストリームで通知。
 /// アプリ起動時（getInitialMedia）と起動中（getMediaStream）の両方に対応。
 /// iOS/Android 以外（macOS/Web）ではプラグイン未実装のため空で返す。
 class ShareIntentService {
+  static const _log = AppLogger('ShareIntent');
+
   ShareIntentService() {
     _initial = _getInitialMediaSafe();
     _stream = _getMediaStreamSafe();
@@ -26,8 +30,8 @@ class ShareIntentService {
     if (!_isSupportedPlatform) return;
     try {
       await ReceiveSharingIntent.instance.reset();
-    } catch (_) {
-      // 未対応プラットフォームでは無視
+    } catch (e) {
+      _log.error('reset 失敗', e);
     }
   }
 
@@ -39,17 +43,19 @@ class ShareIntentService {
     if (!_isSupportedPlatform) return [];
     try {
       return await ReceiveSharingIntent.instance.getInitialMedia();
-    } catch (_) {
+    } catch (e) {
+      _log.error('getInitialMedia 失敗', e);
       return [];
     }
   }
 
   Stream<List<SharedMediaFile>> _getMediaStreamSafe() {
-    if (!_isSupportedPlatform) return Stream.empty();
+    if (!_isSupportedPlatform) return const Stream.empty();
     try {
       return ReceiveSharingIntent.instance.getMediaStream();
-    } catch (_) {
-      return Stream.empty();
+    } catch (e) {
+      _log.error('getMediaStream 失敗', e);
+      return const Stream.empty();
     }
   }
 }

@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
-import '../l10n/app_localizations.dart';
-import '../screens/paywall_screen.dart';
+import '../utils/app_logger.dart';
 
 /// 日次使用回数管理サービス（仕様 1.4: 無料=OCR 5回/日, AI 1回/日）
 ///
@@ -10,8 +8,15 @@ import '../screens/paywall_screen.dart';
 /// アプリ再起動でリセットされるが、MVP では許容。
 /// 本番では SharedPreferences or ローカル DB に永続化する。
 class UsageService {
-  UsageService._();
+  UsageService._() : _clock = DateTime.now;
   static final UsageService instance = UsageService._();
+
+  /// テスト用コンストラクタ（clock injection）
+  @visibleForTesting
+  UsageService.forTest({DateTime Function()? clock})
+      : _clock = clock ?? DateTime.now;
+
+  static const _log = AppLogger('Usage');
 
   // ── 無料プラン上限 ──
   static const int freeOcrLimit = 5;
@@ -25,9 +30,11 @@ class UsageService {
   /// 有料プラン所持フラグ（IAPService と連携して更新）
   bool isPremium = false;
 
+  final DateTime Function() _clock;
+
   /// 今日の日付キー
   String get _today {
-    final now = DateTime.now();
+    final now = _clock();
     return '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
   }
 
@@ -38,7 +45,7 @@ class UsageService {
       _ocrCount = 0;
       _aiCount = 0;
       _dateKey = today;
-      debugPrint('[Usage] 日付リセット: $today');
+      _log.info('日付リセット: $today');
     }
   }
 
@@ -64,7 +71,7 @@ class UsageService {
     _resetIfNewDay();
     if (_ocrCount >= freeOcrLimit) return false;
     _ocrCount++;
-    debugPrint('[Usage] OCR 使用: $_ocrCount/$freeOcrLimit');
+    _log.info('OCR 使用: $_ocrCount/$freeOcrLimit');
     return true;
   }
 
@@ -90,56 +97,7 @@ class UsageService {
     _resetIfNewDay();
     if (_aiCount >= freeAiLimit) return false;
     _aiCount++;
-    debugPrint('[Usage] AI 使用: $_aiCount/$freeAiLimit');
+    _log.info('AI 使用: $_aiCount/$freeAiLimit');
     return true;
-  }
-
-  // ── UI 用ヘルパー ──
-
-  /// 回数制限到達時のダイアログを表示
-  static Future<void> showLimitDialog(
-    BuildContext context, {
-    required String featureName,
-    required int dailyLimit,
-  }) {
-    final l = AppLocalizations.of(context)!;
-    return showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l.usageLimitTitle(featureName)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(l.usageLimitMessage(dailyLimit)),
-            const SizedBox(height: 8),
-            Text(
-              l.usageLimitUpgrade,
-              style: TextStyle(
-                color: Theme.of(ctx).colorScheme.primary,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(l.ok),
-          ),
-          FilledButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => const PaywallScreen(),
-                ),
-              );
-            },
-            child: Text(l.upgrade),
-          ),
-        ],
-      ),
-    );
   }
 }

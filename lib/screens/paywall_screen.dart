@@ -3,6 +3,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 
 import '../l10n/app_localizations.dart';
 import '../services/iap_service.dart';
+import '../utils/safe_set_state.dart';
 
 /// 課金画面（仕様 1.4: 月額¥480 / 買い切り¥2,200）
 class PaywallScreen extends StatefulWidget {
@@ -12,7 +13,7 @@ class PaywallScreen extends StatefulWidget {
   State<PaywallScreen> createState() => _PaywallScreenState();
 }
 
-class _PaywallScreenState extends State<PaywallScreen> {
+class _PaywallScreenState extends State<PaywallScreen> with SafeSetState {
   Offerings? _offerings;
   bool _loading = true;
   bool _purchasing = false;
@@ -25,12 +26,10 @@ class _PaywallScreenState extends State<PaywallScreen> {
 
   Future<void> _loadOfferings() async {
     final offerings = await IAPService.instance.getOfferings();
-    if (mounted) {
-      setState(() {
-        _offerings = offerings;
-        _loading = false;
-      });
-    }
+    safeSetState(() {
+      _offerings = offerings;
+      _loading = false;
+    });
   }
 
   @override
@@ -48,56 +47,45 @@ class _PaywallScreenState extends State<PaywallScreen> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: _loading
-            ? Center(child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const CircularProgressIndicator(),
-                  const SizedBox(height: 16),
-                  Text(l.paywallLoading),
-                ],
-              ))
-            : _offerings == null || _offerings!.current == null
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(32),
-                      child: Text(
-                        l.paywallUnavailable,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.grey.shade600),
-                      ),
-                    ),
-                  )
-                : _buildPaywall(theme, l),
+      body: SafeArea(child: _buildBody(theme, l)),
+    );
+  }
+
+  Widget _buildBody(ThemeData theme, AppLocalizations l) {
+    if (_loading) return _buildLoadingView(l);
+    if (_offerings?.current == null) return _buildUnavailableView(l);
+    return _buildPaywall(theme, l);
+  }
+
+  Widget _buildLoadingView(AppLocalizations l) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const CircularProgressIndicator(),
+          const SizedBox(height: 16),
+          Text(l.paywallLoading),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUnavailableView(AppLocalizations l) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Text(
+          l.paywallUnavailable,
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.grey.shade600),
+        ),
       ),
     );
   }
 
   Widget _buildPaywall(ThemeData theme, AppLocalizations l) {
-    final offering = _offerings!.current!;
-    // 買い切り（lifetime）パッケージのみ使用
-    final lifetimePkg = offering.availablePackages.where(
-      (p) => p.packageType == PackageType.lifetime,
-    );
-    final pkg = lifetimePkg.isNotEmpty
-        ? lifetimePkg.first
-        : offering.availablePackages.isNotEmpty
-            ? offering.availablePackages.first
-            : null;
-
-    if (pkg == null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Text(
-            l.paywallUnavailable,
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.grey.shade600),
-          ),
-        ),
-      );
-    }
+    final pkg = _findLifetimePackage();
+    if (pkg == null) return _buildUnavailableView(l);
 
     final product = pkg.storeProduct;
 
@@ -181,46 +169,51 @@ class _PaywallScreenState extends State<PaywallScreen> {
     );
   }
 
-  Future<void> _onPurchase(Package pkg) async {
-    setState(() => _purchasing = true);
-    final l = AppLocalizations.of(context)!;
+  /// 買い切り（lifetime）パッケージを探す。なければ先頭パッケージ。
+  Package? _findLifetimePackage() {
+    final packages = _offerings!.current!.availablePackages;
+    final lifetime = packages.where(
+      (p) => p.packageType == PackageType.lifetime,
+    );
+    if (lifetime.isNotEmpty) return lifetime.first;
+    return packages.isNotEmpty ? packages.first : null;
+  }
 
-    final success = await IAPService.instance.purchase(pkg);
+  // ───── IAP アクション（購入・復元の共通処理） ─────
+
+  Future<void> _performIapAction({
+    required Future<bool> Function() action,
+    required String successMessage,
+    required String failureMessage,
+  }) async {
+    setState(() => _purchasing = true);
+    final success = await action();
 
     if (!mounted) return;
-    setState(() => _purchasing = false);
+    safeSetState(() => _purchasing = false);
 
-    if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l.paywallPurchaseSuccess)),
-      );
-      Navigator.of(context).pop(true);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l.paywallPurchaseFailed)),
-      );
-    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(success ? successMessage : failureMessage)),
+    );
+    if (success) Navigator.of(context).pop(true);
+  }
+
+  Future<void> _onPurchase(Package pkg) async {
+    final l = AppLocalizations.of(context)!;
+    await _performIapAction(
+      action: () => IAPService.instance.purchase(pkg),
+      successMessage: l.paywallPurchaseSuccess,
+      failureMessage: l.paywallPurchaseFailed,
+    );
   }
 
   Future<void> _onRestore() async {
-    setState(() => _purchasing = true);
     final l = AppLocalizations.of(context)!;
-
-    final success = await IAPService.instance.restore();
-
-    if (!mounted) return;
-    setState(() => _purchasing = false);
-
-    if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l.paywallRestoreSuccess)),
-      );
-      Navigator.of(context).pop(true);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l.paywallRestoreNotFound)),
-      );
-    }
+    await _performIapAction(
+      action: () => IAPService.instance.restore(),
+      successMessage: l.paywallRestoreSuccess,
+      failureMessage: l.paywallRestoreNotFound,
+    );
   }
 }
 

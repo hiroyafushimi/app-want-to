@@ -2,8 +2,9 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' show Rect;
 
-import 'package:flutter/foundation.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+
+import '../utils/app_logger.dart';
 
 /// OCR サービス（仕様 3: iOS=Apple Vision / Android=Google ML Kit）
 ///
@@ -14,6 +15,7 @@ class OcrService {
   OcrService()
       : _recognizer = TextRecognizer(script: TextRecognitionScript.japanese);
 
+  static const _log = AppLogger('OCR');
   final TextRecognizer _recognizer;
 
   /// ファイルパスから OCR を実行し、認識テキストを返す。
@@ -30,13 +32,20 @@ class OcrService {
     final tempFile = File(
       '$tempDir/wan_to_ocr_${DateTime.now().millisecondsSinceEpoch}.png',
     );
-    await tempFile.writeAsBytes(bytes);
+    try {
+      await tempFile.writeAsBytes(bytes);
+    } catch (e) {
+      _log.error('テンポラリファイル書き込み失敗', e);
+      rethrow;
+    }
     try {
       return await recognizeFromFile(tempFile.path);
     } finally {
       try {
         await tempFile.delete();
-      } catch (_) {}
+      } catch (e) {
+        _log.error('テンポラリファイル削除失敗', e);
+      }
     }
   }
 
@@ -61,11 +70,10 @@ class OcrService {
       }
 
       final fullText = recognized.text;
-      debugPrint(
-          '[OCR] 認識完了: ${fullText.length} 文字, ${blocks.length} ブロック');
+      _log.info('認識完了: ${fullText.length} 文字, ${blocks.length} ブロック');
       return OcrResult(text: fullText, blocks: blocks);
     } catch (e) {
-      debugPrint('[OCR] エラー: $e');
+      _log.error('認識エラー', e);
       rethrow;
     }
   }

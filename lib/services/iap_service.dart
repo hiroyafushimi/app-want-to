@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
+import '../utils/app_logger.dart';
 import 'usage_service.dart';
 
 /// RevenueCat 課金サービス（買い切り ¥2,200 のみ）
@@ -19,6 +20,7 @@ class IAPService {
   /// RevenueCat Entitlement ID
   static const String entitlementId = 'premium';
 
+  static const _log = AppLogger('IAP');
   bool _initialized = false;
   bool _isPremium = false;
 
@@ -31,7 +33,7 @@ class IAPService {
 
     final apiKey = _apiKeyForPlatform();
     if (apiKey == null || apiKey.isEmpty) {
-      debugPrint('[IAP] API Key 未設定のためスキップ');
+      _log.info('API Key 未設定のためスキップ');
       return;
     }
 
@@ -48,9 +50,9 @@ class IAPService {
       // 購入状態の変更をリッスン
       Purchases.addCustomerInfoUpdateListener(_onCustomerInfoUpdated);
 
-      debugPrint('[IAP] 初期化完了 (premium=$_isPremium)');
+      _log.info('初期化完了 (premium=$_isPremium)');
     } catch (e) {
-      debugPrint('[IAP] 初期化エラー: $e');
+      _log.error('初期化エラー', e);
     }
   }
 
@@ -66,7 +68,7 @@ class IAPService {
       final info = await Purchases.getCustomerInfo();
       _updatePremium(info);
     } catch (e) {
-      debugPrint('[IAP] ステータス取得エラー: $e');
+      _log.error('ステータス取得エラー', e);
     }
   }
 
@@ -75,7 +77,7 @@ class IAPService {
     _isPremium = info.entitlements.active.containsKey(entitlementId);
     UsageService.instance.isPremium = _isPremium;
     if (wasPremium != _isPremium) {
-      debugPrint('[IAP] Premium 状態変更: $_isPremium');
+      _log.info('Premium 状態変更: $_isPremium');
     }
   }
 
@@ -85,7 +87,7 @@ class IAPService {
     try {
       return await Purchases.getOfferings();
     } catch (e) {
-      debugPrint('[IAP] Offerings 取得エラー: $e');
+      _log.error('Offerings 取得エラー', e);
       return null;
     }
   }
@@ -100,15 +102,21 @@ class IAPService {
     } on PlatformException catch (e) {
       final errorCode = PurchasesErrorHelper.getErrorCode(e);
       if (errorCode == PurchasesErrorCode.purchaseCancelledError) {
-        debugPrint('[IAP] 購入キャンセル');
+        _log.info('購入キャンセル');
       } else {
-        debugPrint('[IAP] 購入エラー: $errorCode');
+        _log.error('購入エラー: $errorCode');
       }
       return false;
     } catch (e) {
-      debugPrint('[IAP] 購入エラー: $e');
+      _log.error('購入エラー', e);
       return false;
     }
+  }
+
+  /// リソース解放（リスナー解除）
+  void dispose() {
+    if (!_initialized) return;
+    Purchases.removeCustomerInfoUpdateListener(_onCustomerInfoUpdated);
   }
 
   /// 購入を復元
@@ -119,7 +127,7 @@ class IAPService {
       _updatePremium(info);
       return _isPremium;
     } catch (e) {
-      debugPrint('[IAP] 復元エラー: $e');
+      _log.error('復元エラー', e);
       return false;
     }
   }

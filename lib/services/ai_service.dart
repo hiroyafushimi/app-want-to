@@ -1,7 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+
+import '../utils/app_logger.dart';
 
 /// AI プロンプト種別（仕様 5. AI連携プロンプト設計）
 enum AiPromptType {
@@ -71,6 +72,7 @@ class AiService {
         _baseUrl = baseUrl ?? 'https://api.openai.com/v1',
         _model = model ?? 'gpt-4o-mini';
 
+  static const _log = AppLogger('AI');
   final String _apiKey;
   final String _baseUrl;
   final String _model;
@@ -118,7 +120,7 @@ class AiService {
         if (choices != null && choices.isNotEmpty) {
           final message = choices[0]['message'] as Map<String, dynamic>?;
           final content = message?['content'] as String? ?? '';
-          debugPrint('[AI] 応答: ${content.length} 文字');
+          _log.info('応答: ${content.length} 文字');
           return AiResult(success: true, text: content.trim());
         }
         return const AiResult(
@@ -139,7 +141,7 @@ class AiService {
           error: 'API のレート制限に達しました。しばらく待ってからお試しください。',
         );
       } else {
-        debugPrint('[AI] エラー: ${response.statusCode} ${response.body}');
+        _log.error('API エラー: ${response.statusCode} ${response.body}');
         return AiResult(
           success: false,
           text: '',
@@ -147,8 +149,8 @@ class AiService {
         );
       }
     } catch (e) {
-      debugPrint('[AI] 通信エラー: $e');
-      return AiResult(
+      _log.error('通信エラー', e);
+      return const AiResult(
         success: false,
         text: '',
         error: 'ネットワークエラー: インターネット接続を確認してください。',

@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
@@ -10,6 +8,8 @@ import '../services/ai_service.dart';
 import '../services/api_key_storage.dart';
 import '../services/classification_service.dart';
 import '../services/usage_service.dart';
+import '../utils/safe_set_state.dart';
+import '../utils/usage_limit_dialog.dart';
 
 /// 結果画面（仕様 6. 画面フロー 3）
 ///
@@ -37,7 +37,7 @@ class ResultScreen extends StatefulWidget {
   State<ResultScreen> createState() => _ResultScreenState();
 }
 
-class _ResultScreenState extends State<ResultScreen> {
+class _ResultScreenState extends State<ResultScreen> with SafeSetState {
   late ClassificationType _selectedType;
   bool _showImage = false;
 
@@ -45,11 +45,6 @@ class _ResultScreenState extends State<ResultScreen> {
   void initState() {
     super.initState();
     _selectedType = widget.classification;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
@@ -380,9 +375,11 @@ class _ResultScreenState extends State<ResultScreen> {
     SharePlus.instance.share(ShareParams(text: widget.ocrText));
   }
 
-  /// URL を開く
+  /// URL を開く（http/https のみ許可）
   Future<void> _launchUrl(String url) async {
-    final uri = Uri.parse(url);
+    final uri = Uri.tryParse(url);
+    if (uri == null) return;
+    if (uri.scheme != 'http' && uri.scheme != 'https') return;
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
@@ -409,7 +406,7 @@ class _AiModalSheet extends StatefulWidget {
   State<_AiModalSheet> createState() => _AiModalSheetState();
 }
 
-class _AiModalSheetState extends State<_AiModalSheet> {
+class _AiModalSheetState extends State<_AiModalSheet> with SafeSetState {
   final ApiKeyStorage _keyStorage = ApiKeyStorage();
   final TextEditingController _inputController = TextEditingController();
 
@@ -433,12 +430,10 @@ class _AiModalSheetState extends State<_AiModalSheet> {
 
   Future<void> _loadApiKey() async {
     final key = await _keyStorage.read();
-    if (mounted) {
-      setState(() {
-        _apiKey = key;
-        _loadingKey = false;
-      });
-    }
+    safeSetState(() {
+      _apiKey = key;
+      _loadingKey = false;
+    });
   }
 
   bool get _hasKey => _apiKey != null && _apiKey!.isNotEmpty;
@@ -456,78 +451,81 @@ class _AiModalSheetState extends State<_AiModalSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ヘッダー
-              Row(
-                children: [
-                  const Icon(Icons.smart_toy, size: 24),
-                  const SizedBox(width: 8),
-                  Text(AppLocalizations.of(context)!.aiModalTitle,
-                      style: Theme.of(context).textTheme.titleLarge),
-                ],
-              ),
+              _buildHeader(),
               const SizedBox(height: 16),
-
-              // API Key 未設定の場合
-              if (_loadingKey)
-                const Center(child: CircularProgressIndicator())
-              else if (!_hasKey)
-                _buildNoKeyView()
-              else ...[
-                // プロンプト選択
-                _buildPromptSelector(),
-                const SizedBox(height: 12),
-
-                // フリー入力（必要な場合）
-                if (_selectedPrompt.needsUserInput) ...[
-                  TextField(
-                    controller: _inputController,
-                    maxLength: 100,
-                    maxLines: 2,
-                    decoration: InputDecoration(
-                      hintText: _selectedPrompt == AiPromptType.question
-                          ? AppLocalizations.of(context)!.enterQuestion
-                          : AppLocalizations.of(context)!.enterPrompt,
-                      border: const OutlineInputBorder(),
-                      counterText: '',
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                ],
-
-                // 送信ボタン
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: FilledButton.icon(
-                    onPressed: _sending ? null : _onSend,
-                    icon: _sending
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : const Icon(Icons.send),
-                    label: Text(_sending
-                        ? AppLocalizations.of(context)!.processing
-                        : AppLocalizations.of(context)!.send),
-                  ),
-                ),
-
-                // 結果表示
-                if (_result != null) ...[
-                  const SizedBox(height: 16),
-                  _buildResultView(),
-                ],
-              ],
+              ..._buildContent(),
               const SizedBox(height: 8),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildHeader() {
+    return Row(
+      children: [
+        const Icon(Icons.smart_toy, size: 24),
+        const SizedBox(width: 8),
+        Text(AppLocalizations.of(context)!.aiModalTitle,
+            style: Theme.of(context).textTheme.titleLarge),
+      ],
+    );
+  }
+
+  List<Widget> _buildContent() {
+    if (_loadingKey) {
+      return [const Center(child: CircularProgressIndicator())];
+    }
+    if (!_hasKey) {
+      return [_buildNoKeyView()];
+    }
+    return _buildKeyPresentContent();
+  }
+
+  List<Widget> _buildKeyPresentContent() {
+    final l = AppLocalizations.of(context)!;
+    return [
+      _buildPromptSelector(),
+      const SizedBox(height: 12),
+      if (_selectedPrompt.needsUserInput) ...[
+        TextField(
+          controller: _inputController,
+          maxLength: 100,
+          maxLines: 2,
+          decoration: InputDecoration(
+            hintText: _selectedPrompt == AiPromptType.question
+                ? l.enterQuestion
+                : l.enterPrompt,
+            border: const OutlineInputBorder(),
+            counterText: '',
+          ),
+        ),
+        const SizedBox(height: 12),
+      ],
+      SizedBox(
+        width: double.infinity,
+        height: 48,
+        child: FilledButton.icon(
+          onPressed: _sending ? null : _onSend,
+          icon: _sending
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                )
+              : const Icon(Icons.send),
+          label: Text(_sending ? l.processing : l.send),
+        ),
+      ),
+      if (_result != null) ...[
+        const SizedBox(height: 16),
+        _buildResultView(),
+      ],
+    ];
   }
 
   // ───── API Key 未設定 ─────
@@ -642,7 +640,7 @@ class _AiModalSheetState extends State<_AiModalSheet> {
                   ScaffoldMessenger.of(widget.parentContext).showSnackBar(
                     SnackBar(
                       content: Text(AppLocalizations.of(context)!.aiResponseCopied),
-                      duration: Duration(seconds: 1),
+                      duration: const Duration(seconds: 1),
                     ),
                   );
                 },
@@ -670,7 +668,7 @@ class _AiModalSheetState extends State<_AiModalSheet> {
     final usage = UsageService.instance;
     if (!usage.canUseAi) {
       if (!mounted) return;
-      UsageService.showLimitDialog(
+      showUsageLimitDialog(
         widget.parentContext,
         featureName: 'AI',
         dailyLimit: UsageService.freeAiLimit,
@@ -704,11 +702,9 @@ class _AiModalSheetState extends State<_AiModalSheet> {
       usage.consumeAi();
     }
 
-    if (mounted) {
-      setState(() {
-        _sending = false;
-        _result = result;
-      });
-    }
+    safeSetState(() {
+      _sending = false;
+      _result = result;
+    });
   }
 }
