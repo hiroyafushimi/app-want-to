@@ -47,6 +47,13 @@ build/
 *.jks
 key.properties
 
+# Internal docs (keep local only)
+CLAUDE.md
+SPEC_WANT_TO.md
+SETUP.md
+RELEASE_GUIDE.md
+APP_STORE_SUBMISSION.md
+
 # OS
 .DS_Store
 Thumbs.db
