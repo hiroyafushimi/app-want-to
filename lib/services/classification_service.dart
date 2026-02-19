@@ -5,31 +5,7 @@ import '../constants/app_constants.dart';
 enum ClassificationType {
   product,
   text,
-  other;
-
-  /// UI 表示用ラベル
-  String get label {
-    switch (this) {
-      case ClassificationType.product:
-        return '商品';
-      case ClassificationType.text:
-        return '文章';
-      case ClassificationType.other:
-        return 'その他';
-    }
-  }
-
-  /// アイコン
-  String get emoji {
-    switch (this) {
-      case ClassificationType.product:
-        return '🛒';
-      case ClassificationType.text:
-        return '📝';
-      case ClassificationType.other:
-        return '📋';
-    }
-  }
+  other,
 }
 
 /// ルールベース分類（MVP: 商品キーワード + 正規表現）

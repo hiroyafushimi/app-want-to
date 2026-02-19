@@ -11,32 +11,6 @@ enum AiPromptType {
   translate,
   custom;
 
-  String get label {
-    switch (this) {
-      case AiPromptType.summary:
-        return '要約';
-      case AiPromptType.question:
-        return '質問回答';
-      case AiPromptType.translate:
-        return '翻訳（日→英）';
-      case AiPromptType.custom:
-        return 'カスタム';
-    }
-  }
-
-  String get description {
-    switch (this) {
-      case AiPromptType.summary:
-        return '300字以内で簡潔に要約';
-      case AiPromptType.question:
-        return 'テキストについて質問に回答';
-      case AiPromptType.translate:
-        return '自然な英語に翻訳';
-      case AiPromptType.custom:
-        return '自由にプロンプトを入力';
-    }
-  }
-
   /// システムプロンプトを生成する。
   /// [userInput] はフリー入力テキスト（質問/カスタム用）。
   String buildSystemPrompt(String? userInput) {

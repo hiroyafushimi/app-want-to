@@ -3,14 +3,8 @@
 
   "appTitle": "ActClip",
 
-  "homeMessage": "共有シートから画像を受信して起動します。",
-
   "settings": "設定",
   "settingsTooltip": "設定",
-
-  "receivedImage": "受信画像",
-  "goToRegionSelect": "範囲指定へ",
-  "noImage": "画像がありません。共有シートから画像を送ってください。",
 
   "regionSelect": "範囲指定",
   "regionSelectInstruction": "指でドラッグして、読み取りたい範囲を選択してください",

@@ -3,14 +3,8 @@
 
   "appTitle": "ActClip",
 
-  "homeMessage": "Share a screenshot to get started.",
-
   "settings": "Settings",
   "settingsTooltip": "Settings",
-
-  "receivedImage": "Received Image",
-  "goToRegionSelect": "Select Region",
-  "noImage": "No image found. Please share an image to get started.",
 
   "regionSelect": "Select Region",
   "regionSelectInstruction": "Drag to select the area you want to read",

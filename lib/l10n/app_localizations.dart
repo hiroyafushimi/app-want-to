@@ -104,12 +104,6 @@ abstract class AppLocalizations {
   /// **'ActClip'**
   String get appTitle;
 
-  /// No description provided for @homeMessage.
-  ///
-  /// In ja, this message translates to:
-  /// **'共有シートから画像を受信して起動します。'**
-  String get homeMessage;
-
   /// No description provided for @settings.
   ///
   /// In ja, this message translates to:
@@ -121,24 +115,6 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'設定'**
   String get settingsTooltip;
-
-  /// No description provided for @receivedImage.
-  ///
-  /// In ja, this message translates to:
-  /// **'受信画像'**
-  String get receivedImage;
-
-  /// No description provided for @goToRegionSelect.
-  ///
-  /// In ja, this message translates to:
-  /// **'範囲指定へ'**
-  String get goToRegionSelect;
-
-  /// No description provided for @noImage.
-  ///
-  /// In ja, this message translates to:
-  /// **'画像がありません。共有シートから画像を送ってください。'**
-  String get noImage;
 
   /// No description provided for @regionSelect.
   ///

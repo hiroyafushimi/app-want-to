@@ -24,6 +24,7 @@ build/
 # iOS
 **/ios/Pods/
 **/ios/.symlinks/
+**/macos/Pods/
 **/ios/Flutter/Flutter.framework
 **/ios/Flutter/Flutter.podspec
 **/ios/Runner.xcworkspace/xcshareddata/

@@ -12,22 +12,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'ActClip';
 
   @override
-  String get homeMessage => 'Share a screenshot to get started.';
-
-  @override
   String get settings => 'Settings';
 
   @override
   String get settingsTooltip => 'Settings';
-
-  @override
-  String get receivedImage => 'Received Image';
-
-  @override
-  String get goToRegionSelect => 'Select Region';
-
-  @override
-  String get noImage => 'No image found. Please share an image to get started.';
 
   @override
   String get regionSelect => 'Select Region';

@@ -21,7 +21,7 @@ import 'result_screen.dart';
 class RegionSelectScreen extends StatefulWidget {
   const RegionSelectScreen({super.key, this.imagePath});
 
-  /// 受信画像のローカルパス（ReceivedImageScreen から渡す）
+  /// 受信画像のローカルパス
   final String? imagePath;
 
   @override

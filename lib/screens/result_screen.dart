@@ -576,13 +576,20 @@ class _AiModalSheetState extends State<_AiModalSheet> with SafeSetState {
   // ───── プロンプト選択 ─────
 
   Widget _buildPromptSelector() {
+    final l = AppLocalizations.of(context)!;
+    final labels = {
+      AiPromptType.summary: l.aiPromptSummary,
+      AiPromptType.question: l.aiPromptQuestion,
+      AiPromptType.translate: l.aiPromptTranslate,
+      AiPromptType.custom: l.aiPromptCustom,
+    };
     return Wrap(
       spacing: 8,
       runSpacing: 8,
       children: AiPromptType.values.map((type) {
         final selected = _selectedPrompt == type;
         return ChoiceChip(
-          label: Text(type.label),
+          label: Text(labels[type]!),
           selected: selected,
           onSelected: (_) => setState(() {
             _selectedPrompt = type;

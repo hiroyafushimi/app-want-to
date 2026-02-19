@@ -12,22 +12,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appTitle => 'ActClip';
 
   @override
-  String get homeMessage => '共有シートから画像を受信して起動します。';
-
-  @override
   String get settings => '設定';
 
   @override
   String get settingsTooltip => '設定';
-
-  @override
-  String get receivedImage => '受信画像';
-
-  @override
-  String get goToRegionSelect => '範囲指定へ';
-
-  @override
-  String get noImage => '画像がありません。共有シートから画像を送ってください。';
 
   @override
   String get regionSelect => '範囲指定';

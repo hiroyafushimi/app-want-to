@@ -1,60 +1,42 @@
 # ActClip
 
-スクショ画像を共有シート経由で受け取り、指で範囲指定 → OCR → テキスト化。内容を分類し、次のアクションを提案・実行するモバイルアプリです。AI はユーザー自身の API Key で外部処理（コストゼロ・セキュリティ最優先）。
+スクリーンショットを共有シートから受け取り、指で範囲指定 → OCR → テキスト化。内容を自動分類し、次のアクションを提案するモバイルアプリです。
 
-## 概要
+## 機能
 
-- **フロー**: スクショ → 共有シート → 本アプリ起動 → 指で囲む → OCR → テキスト化
-- **分類**: 商品 / 文章 / その他 → アクション提案
-  - 商品 → 通販サイト比較検索 URL（Amazon / Rakuten / Yahoo）
-  - 文章 → ユーザー設定の AI Agent に送信（要約・質問・翻訳など）
-  - その他 → コピー / OS 共有（Line / Slack / メール）
-- **技術**: Flutter / オフライン OCR（Apple Vision / ML Kit）/ ユーザー API Key のみで AI 連携
+- **範囲指定 OCR**: スクリーンショットの読み取りたい部分を指でドラッグして選択
+- **自動分類**: 商品 / 文章 / その他を自動判定し、最適なアクションを提案
+  - 商品 → 通販サイトで検索（Amazon / 楽天 / Yahoo）
+  - 文章 → AI で要約・翻訳・質問回答
+  - その他 → コピー / 共有
+- **AI 連携**: ユーザー自身の OpenAI API Key で動作（アプリ側にコストなし）
+- **プライバシー重視**: OCR は完全オンデバイス処理。API Key は端末内に暗号化保存
 
 ## 技術スタック
 
-| 項目     | iOS           | Android     |
-|----------|---------------|-------------|
-| フレームワーク | Flutter       | Flutter     |
-| OCR      | Apple Vision  | Google ML Kit |
+| 項目 | iOS | Android |
+|------|-----|---------|
+| フレームワーク | Flutter | Flutter |
+| OCR | Apple Vision | Google ML Kit |
 | 共有受信 | Share Extension | Intent Filter |
-| Key 保存 | flutter_secure_storage | flutter_secure_storage |
-
-詳細仕様は [SPEC_WANT_TO.md](./SPEC_WANT_TO.md) を参照してください。
+| Key 保存 | Keychain (flutter_secure_storage) | Keystore (flutter_secure_storage) |
+| 課金 | RevenueCat | RevenueCat |
 
 ## セットアップ
 
 ```bash
-# 依存関係
 flutter pub get
-
-# 実行（iOS / Android は接続デバイスまたはシミュレータが必要）
 flutter run
 ```
 
-## 開発
+## プライバシーポリシー
 
-- 仕様書: `SPEC_WANT_TO.md`
-- Cursor ルール: `.cursor/rules/` を参照（プロジェクト規約・Dart 規約）
+[プライバシーポリシー](./privacy_policy.md)
 
-## GitHub セットアップ
+## サポート
 
-1. GitHub で新しいリポジトリを作成（例: `act-clip`）。Initialize with README は不要。
-2. リモートを追加してプッシュ:
-
-```bash
-git remote add origin https://github.com/<ユーザー名>/<リポジトリ名>.git
-git branch -M main
-git push -u origin main
-```
-
-SSH を使う場合:
-
-```bash
-git remote add origin git@github.com:<ユーザー名>/<リポジトリ名>.git
-git push -u origin main
-```
+[サポートページ](https://hiroyafushimi.github.io/app-want-to/support.html)
 
 ## ライセンス
 
-（必要に応じて追記）
+All rights reserved.
