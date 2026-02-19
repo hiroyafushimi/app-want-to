@@ -7,6 +7,8 @@ import 'screens/paywall_screen.dart';
 import 'screens/region_select_screen.dart';
 import 'screens/settings_screen.dart';
 import 'services/share_intent_service.dart';
+import 'utils/app_logger.dart';
+import 'utils/safe_set_state.dart';
 
 /// ActClip ルートアプリ。
 /// 共有シート起点・常駐なし（SPEC_WANT_TO.md 準拠）
@@ -17,7 +19,8 @@ class ActClipApp extends StatefulWidget {
   State<ActClipApp> createState() => _ActClipAppState();
 }
 
-class _ActClipAppState extends State<ActClipApp> {
+class _ActClipAppState extends State<ActClipApp> with SafeSetState {
+  static const _log = AppLogger('ActClip');
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   final ShareIntentService _shareIntent = ShareIntentService();
   bool _onboardingDone = true; // デフォルト true でフラッシュ防止
@@ -33,12 +36,10 @@ class _ActClipAppState extends State<ActClipApp> {
 
   Future<void> _checkOnboarding() async {
     // メモリ内で簡易管理（MVP）。本番では SharedPreferences で永続化。
-    if (mounted) {
-      setState(() {
-        _onboardingDone = _onboardingCompleted;
-        _loaded = true;
-      });
-    }
+    safeSetState(() {
+      _onboardingDone = _onboardingCompleted;
+      _loaded = true;
+    });
   }
 
   // static フラグ（アプリプロセス内で保持）
@@ -51,9 +52,9 @@ class _ActClipAppState extends State<ActClipApp> {
 
   Future<void> _handleInitialShare() async {
     final list = await _shareIntent.initialMedia;
-    debugPrint('[ActClip] getInitialMedia: ${list.length} 件');
+    _log.info('getInitialMedia: ${list.length} 件');
     if (list.isNotEmpty) {
-      debugPrint('[ActClip] 先頭 path: ${list.first.path}');
+      _log.info('先頭 path: ${list.first.path}');
       _navigateToRegionSelect(list.first.path);
       await ShareIntentService.reset();
     }
@@ -61,7 +62,7 @@ class _ActClipAppState extends State<ActClipApp> {
 
   void _handleShareStream() {
     _shareIntent.mediaStream.listen((list) {
-      debugPrint('[ActClip] mediaStream: ${list.length} 件');
+      _log.info('mediaStream: ${list.length} 件');
       if (list.isNotEmpty) {
         _navigateToRegionSelect(list.first.path);
       }

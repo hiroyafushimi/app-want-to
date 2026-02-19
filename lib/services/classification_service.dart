@@ -1,3 +1,5 @@
+import '../constants/app_constants.dart';
+
 /// 分類ロジック（仕様 4: 無料=ルールベース、有料=ML Kit 追加）
 /// 商品 / 文章 / その他
 enum ClassificationType {
@@ -90,7 +92,9 @@ class ClassificationService {
     }
 
     // ── 文章判定（20文字以上なら文章とみなす） ──
-    if (t.length >= 20) return ClassificationType.text;
+    if (t.length >= AppConstants.kMinTextClassificationLength) {
+      return ClassificationType.text;
+    }
 
     // ── その他 ──
     return ClassificationType.other;
@@ -111,7 +115,9 @@ class ClassificationService {
     // 連続空白を1つに
     q = q.replaceAll(RegExp(r'\s+'), ' ').trim();
     // 長すぎる場合は先頭 60 文字
-    if (q.length > 60) q = q.substring(0, 60);
+    if (q.length > AppConstants.kMaxProductQueryLength) {
+      q = q.substring(0, AppConstants.kMaxProductQueryLength);
+    }
     return q;
   }
 }
