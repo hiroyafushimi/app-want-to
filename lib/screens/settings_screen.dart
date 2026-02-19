@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
+import '../services/ai_consent_service.dart';
 import '../services/api_key_storage.dart';
 import '../services/iap_service.dart';
 import '../services/usage_service.dart';
@@ -80,6 +81,11 @@ class _SettingsScreenState extends State<SettingsScreen> with SafeSetState {
                 ),
               ),
             ),
+          ListTile(
+            leading: const Icon(Icons.privacy_tip_outlined),
+            title: Text(l.aiConsentRevoke),
+            onTap: _confirmRevokeConsent,
+          ),
           const Divider(height: 32),
 
           // ───── プランセクション ─────
@@ -216,6 +222,37 @@ class _SettingsScreenState extends State<SettingsScreen> with SafeSetState {
               );
             },
             child: Text(l.save),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ───── AI 同意撤回確認 ─────
+
+  void _confirmRevokeConsent() {
+    final l = AppLocalizations.of(context)!;
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.aiConsentRevoke),
+        content: Text(l.aiConsentRevokeConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(l.cancel),
+          ),
+          FilledButton(
+            onPressed: () async {
+              await AiConsentService().revokeConsent();
+              if (ctx.mounted) Navigator.pop(ctx);
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(l.aiConsentRevoked)),
+                );
+              }
+            },
+            child: Text(l.ok),
           ),
         ],
       ),

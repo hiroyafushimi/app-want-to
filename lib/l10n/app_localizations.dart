@@ -697,6 +697,54 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'プレミアムなら回数無制限で使えます。'**
   String get usageLimitUpgrade;
+
+  /// No description provided for @aiConsentTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'AI データ送信について'**
+  String get aiConsentTitle;
+
+  /// No description provided for @aiConsentMessage.
+  ///
+  /// In ja, this message translates to:
+  /// **'「AI に聞く」機能を使用すると、読み取ったテキストが OpenAI のサーバーに送信されます。\n\n送信されるデータ：\n・OCR で読み取ったテキスト\n・選択したプロンプト（要約・翻訳等）\n\n受信者：\nOpenAI（データは OpenAI のプライバシーポリシーに従い処理されます）'**
+  String get aiConsentMessage;
+
+  /// No description provided for @aiConsentPrivacyLink.
+  ///
+  /// In ja, this message translates to:
+  /// **'OpenAI プライバシーポリシーを確認'**
+  String get aiConsentPrivacyLink;
+
+  /// No description provided for @aiConsentAgree.
+  ///
+  /// In ja, this message translates to:
+  /// **'同意する'**
+  String get aiConsentAgree;
+
+  /// No description provided for @aiConsentDecline.
+  ///
+  /// In ja, this message translates to:
+  /// **'同意しない'**
+  String get aiConsentDecline;
+
+  /// No description provided for @aiConsentRevoke.
+  ///
+  /// In ja, this message translates to:
+  /// **'AI データ送信の同意を撤回'**
+  String get aiConsentRevoke;
+
+  /// No description provided for @aiConsentRevokeConfirm.
+  ///
+  /// In ja, this message translates to:
+  /// **'AI データ送信への同意を撤回しますか？\n次回 AI 利用時に再度確認が表示されます。'**
+  String get aiConsentRevokeConfirm;
+
+  /// No description provided for @aiConsentRevoked.
+  ///
+  /// In ja, this message translates to:
+  /// **'同意を撤回しました'**
+  String get aiConsentRevoked;
 }
 
 class _AppLocalizationsDelegate

@@ -329,4 +329,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get usageLimitUpgrade => 'Go Premium for unlimited usage.';
+
+  @override
+  String get aiConsentTitle => 'AI Data Sharing';
+
+  @override
+  String get aiConsentMessage =>
+      'When you use the \"Ask AI\" feature, the recognized text will be sent to OpenAI\'s servers.\n\nData sent:\n・Text recognized by OCR\n・Selected prompt (summary, translation, etc.)\n\nRecipient:\nOpenAI (data is processed according to OpenAI\'s Privacy Policy)';
+
+  @override
+  String get aiConsentPrivacyLink => 'View OpenAI Privacy Policy';
+
+  @override
+  String get aiConsentAgree => 'Agree';
+
+  @override
+  String get aiConsentDecline => 'Decline';
+
+  @override
+  String get aiConsentRevoke => 'Revoke AI data sharing consent';
+
+  @override
+  String get aiConsentRevokeConfirm =>
+      'Revoke your consent to AI data sharing?\nYou will be asked again next time you use AI.';
+
+  @override
+  String get aiConsentRevoked => 'Consent revoked';
 }

@@ -4,10 +4,12 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../l10n/app_localizations.dart';
+import '../services/ai_consent_service.dart';
 import '../services/ai_service.dart';
 import '../services/api_key_storage.dart';
 import '../services/classification_service.dart';
 import '../services/usage_service.dart';
+import '../utils/ai_consent_dialog.dart';
 import '../utils/safe_set_state.dart';
 import '../utils/usage_limit_dialog.dart';
 
@@ -664,12 +666,22 @@ class _AiModalSheetState extends State<_AiModalSheet> with SafeSetState {
   Future<void> _onSend() async {
     if (!_hasKey) return;
 
+    // AI データ送信同意チェック（Apple Guideline 5.1.1(i)/5.1.2(i)）
+    final parentCtx = widget.parentContext;
+    final consent = AiConsentService();
+    if (!await consent.hasConsented()) {
+      if (!mounted) return;
+      final agreed = await showAiConsentDialog(parentCtx);
+      if (!agreed) return;
+      await consent.setConsented();
+    }
+
     // 無料回数チェック
     final usage = UsageService.instance;
     if (!usage.canUseAi) {
       if (!mounted) return;
       showUsageLimitDialog(
-        widget.parentContext,
+        parentCtx,
         featureName: 'AI',
         dailyLimit: UsageService.freeAiLimit,
       );
@@ -679,7 +691,8 @@ class _AiModalSheetState extends State<_AiModalSheet> with SafeSetState {
     // フリー入力バリデーション
     if (_selectedPrompt.needsUserInput &&
         _inputController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(widget.parentContext).showSnackBar(
+      if (!mounted) return;
+      ScaffoldMessenger.of(parentCtx).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.pleaseEnterText)),
       );
       return;

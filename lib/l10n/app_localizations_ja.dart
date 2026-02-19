@@ -324,4 +324,30 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get usageLimitUpgrade => 'プレミアムなら回数無制限で使えます。';
+
+  @override
+  String get aiConsentTitle => 'AI データ送信について';
+
+  @override
+  String get aiConsentMessage =>
+      '「AI に聞く」機能を使用すると、読み取ったテキストが OpenAI のサーバーに送信されます。\n\n送信されるデータ：\n・OCR で読み取ったテキスト\n・選択したプロンプト（要約・翻訳等）\n\n受信者：\nOpenAI（データは OpenAI のプライバシーポリシーに従い処理されます）';
+
+  @override
+  String get aiConsentPrivacyLink => 'OpenAI プライバシーポリシーを確認';
+
+  @override
+  String get aiConsentAgree => '同意する';
+
+  @override
+  String get aiConsentDecline => '同意しない';
+
+  @override
+  String get aiConsentRevoke => 'AI データ送信の同意を撤回';
+
+  @override
+  String get aiConsentRevokeConfirm =>
+      'AI データ送信への同意を撤回しますか？\n次回 AI 利用時に再度確認が表示されます。';
+
+  @override
+  String get aiConsentRevoked => '同意を撤回しました';
 }

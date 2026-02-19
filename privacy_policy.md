@@ -1,6 +1,6 @@
 # ActClip プライバシーポリシー
 
-最終更新日: 2026年2月9日
+最終更新日: 2026年2月19日
 
 ## はじめに
 
@@ -30,7 +30,15 @@ ActClip（以下「本アプリ」）は、ユーザーのプライバシーを�
 
 ### OpenAI API（任意）
 
-ユーザーが API Key を設定し、AI 機能を利用する場合に限り、OCR で認識されたテキストが OpenAI のサーバーに送信されます。この通信はユーザーの明示的な操作（「AI に聞く」ボタンのタップ）によってのみ発生します。OpenAI のプライバシーポリシーについては [OpenAI Privacy Policy](https://openai.com/privacy/) をご参照ください。
+ユーザーが API Key を設定し、AI 機能を利用する場合に限り、以下のデータが OpenAI のサーバーに送信されます：
+
+- **送信されるデータ**: OCR で認識されたテキスト、選択したプロンプト種別（要約・質問回答・翻訳・カスタム）
+- **送信先**: OpenAI（https://api.openai.com）
+- **送信タイミング**: ユーザーが「AI に聞く」画面で「送信」ボタンを明示的にタップした場合のみ
+- **同意の取得**: 初回利用時にアプリ内でデータ送信先と内容を説明するダイアログを表示し、ユーザーの明示的な同意を取得します。同意は設定画面からいつでも撤回できます。
+- **データの利用**: OpenAI の API 利用規約に基づき、API 経由で送信されたデータはモデルの学習には使用されません。
+
+OpenAI のプライバシーポリシーについては [OpenAI Privacy Policy](https://openai.com/privacy/) をご参照ください。
 
 ### RevenueCat（課金処理）
 
@@ -71,7 +79,7 @@ ActClip（以下「本アプリ」）は、ユーザーのプライバシーを�
 
 # ActClip Privacy Policy
 
-Last updated: February 9, 2026
+Last updated: February 19, 2026
 
 ## Introduction
 
@@ -99,7 +107,15 @@ The following information is processed only on your device and is never transmit
 
 ### OpenAI API (Optional)
 
-Only when the user has set an API Key and explicitly initiates an AI action (by tapping the "Ask AI" button), recognized text is sent to OpenAI's servers. See [OpenAI Privacy Policy](https://openai.com/privacy/) for details.
+Only when the user has set an API Key and uses the AI feature, the following data is sent to OpenAI's servers:
+
+- **Data sent**: Text recognized by OCR, selected prompt type (summary, Q&A, translation, or custom)
+- **Recipient**: OpenAI (https://api.openai.com)
+- **When sent**: Only when the user explicitly taps the "Send" button on the "Ask AI" screen
+- **Consent**: On first use, the App displays a dialog explaining what data is sent and to whom, and obtains explicit user consent. Consent can be revoked at any time from the Settings screen.
+- **Data usage**: Per OpenAI's API Terms of Service, data submitted via the API is not used for model training.
+
+See [OpenAI Privacy Policy](https://openai.com/privacy/) for details.
 
 ### RevenueCat (In-App Purchases)
 
