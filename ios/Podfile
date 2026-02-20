@@ -46,4 +46,13 @@ post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
   end
+
+  # Xcode 26: receive_sharing_intent の umbrella header から ObjC ヘッダーを除外
+  # Clang dependency scanner が Flutter/Flutter.h を解決できない問題の回避策
+  umbrella = File.join(installer.sandbox.root, 'Target Support Files', 'receive_sharing_intent', 'receive_sharing_intent-umbrella.h')
+  if File.exist?(umbrella)
+    content = File.read(umbrella)
+    content.gsub!('#import "ReceiveSharingIntentPlugin.h"', '// removed for Xcode 26 compat')
+    File.write(umbrella, content)
+  end
 end
