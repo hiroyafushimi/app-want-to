@@ -83,9 +83,20 @@ class IAPService {
 
   /// Offerings を取得（Paywall 表示用）
   Future<Offerings?> getOfferings() async {
-    if (!_initialized) return null;
+    if (!_initialized) {
+      _log.error('Offerings 取得失敗: 未初期化');
+      return null;
+    }
     try {
-      return await Purchases.getOfferings();
+      final offerings = await Purchases.getOfferings();
+      final pkgs = offerings.current?.availablePackages
+          .map((p) => '${p.identifier}(${p.storeProduct.identifier})')
+          .toList();
+      _log.info('Offerings 取得: '
+          'all=${offerings.all.keys.toList()}, '
+          'current=${offerings.current?.identifier ?? "null"}, '
+          'packages=$pkgs');
+      return offerings;
     } catch (e) {
       _log.error('Offerings 取得エラー', e);
       return null;
