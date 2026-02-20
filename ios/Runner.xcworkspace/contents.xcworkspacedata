@@ -7,4 +7,10 @@
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:../../../../../../private/tmp/flutter-pods-wantto/Pods.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:../../../../Developer/app-want-to/Pods/Pods.xcodeproj">
+   </FileRef>
 </Workspace>
