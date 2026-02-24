@@ -151,6 +151,11 @@
   "aiConsentAgree": "同意する",
   "aiConsentDecline": "同意しない",
 
+  "tryDemo": "デモを試す",
+  "demoResponse": "デモ回答",
+  "demoDescription": "API Key を設定すると実際の AI 回答が得られます。",
+  "demoButtonDescription": "API Key がなくても AI 機能をお試しいただけます",
+
   "aiConsentRevoke": "AI データ送信の同意を撤回",
   "aiConsentRevokeConfirm": "AI データ送信への同意を撤回しますか？\n次回 AI 利用時に再度確認が表示されます。",
   "aiConsentRevoked": "同意を撤回しました"

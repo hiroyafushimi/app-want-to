@@ -704,6 +704,30 @@ abstract class AppLocalizations {
   /// **'同意しない'**
   String get aiConsentDecline;
 
+  /// No description provided for @tryDemo.
+  ///
+  /// In ja, this message translates to:
+  /// **'デモを試す'**
+  String get tryDemo;
+
+  /// No description provided for @demoResponse.
+  ///
+  /// In ja, this message translates to:
+  /// **'デモ回答'**
+  String get demoResponse;
+
+  /// No description provided for @demoDescription.
+  ///
+  /// In ja, this message translates to:
+  /// **'API Key を設定すると実際の AI 回答が得られます。'**
+  String get demoDescription;
+
+  /// No description provided for @demoButtonDescription.
+  ///
+  /// In ja, this message translates to:
+  /// **'API Key がなくても AI 機能をお試しいただけます'**
+  String get demoButtonDescription;
+
   /// No description provided for @aiConsentRevoke.
   ///
   /// In ja, this message translates to:

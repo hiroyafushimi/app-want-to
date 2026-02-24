@@ -139,9 +139,11 @@ class AiResult {
     required this.success,
     required this.text,
     this.error,
+    this.isDemo = false,
   });
 
   final bool success;
   final String text;
   final String? error;
+  final bool isDemo;
 }

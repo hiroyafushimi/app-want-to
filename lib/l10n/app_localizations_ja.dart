@@ -330,6 +330,18 @@ class AppLocalizationsJa extends AppLocalizations {
   String get aiConsentDecline => '同意しない';
 
   @override
+  String get tryDemo => 'デモを試す';
+
+  @override
+  String get demoResponse => 'デモ回答';
+
+  @override
+  String get demoDescription => 'API Key を設定すると実際の AI 回答が得られます。';
+
+  @override
+  String get demoButtonDescription => 'API Key がなくても AI 機能をお試しいただけます';
+
+  @override
   String get aiConsentRevoke => 'AI データ送信の同意を撤回';
 
   @override

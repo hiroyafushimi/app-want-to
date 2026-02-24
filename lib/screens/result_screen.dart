@@ -7,6 +7,7 @@ import '../constants/app_constants.dart';
 import '../l10n/app_localizations.dart';
 import '../services/ai_consent_service.dart';
 import '../services/ai_service.dart';
+import '../services/demo_ai_service.dart';
 import '../services/api_key_storage.dart';
 import '../services/classification_service.dart';
 import '../services/usage_service.dart';
@@ -402,6 +403,7 @@ class _AiModalSheetState extends State<_AiModalSheet> with SafeSetState {
   String? _apiKey;
   bool _loadingKey = true;
   bool _sending = false;
+  bool _isDemoMode = false;
   AiResult? _result;
 
   @override
@@ -519,6 +521,7 @@ class _AiModalSheetState extends State<_AiModalSheet> with SafeSetState {
   // ───── API Key 未設定 ─────
 
   Widget _buildNoKeyView() {
+    final l = AppLocalizations.of(context)!;
     return Column(
       children: [
         Container(
@@ -532,15 +535,11 @@ class _AiModalSheetState extends State<_AiModalSheet> with SafeSetState {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                AppLocalizations.of(context)!.apiKeyNotSet,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
+              Text(l.apiKeyNotSet,
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 4),
-              Text(
-                AppLocalizations.of(context)!.apiKeyNotSetDescription,
-                style: const TextStyle(fontSize: 13),
-              ),
+              Text(l.apiKeyNotSetDescription,
+                  style: const TextStyle(fontSize: 13)),
             ],
           ),
         ),
@@ -552,9 +551,68 @@ class _AiModalSheetState extends State<_AiModalSheet> with SafeSetState {
               Navigator.pop(context);
               Navigator.of(widget.parentContext).pushNamed('/settings');
             },
-            child: Text(AppLocalizations.of(context)!.openSettings),
+            child: Text(l.openSettings),
           ),
         ),
+        const SizedBox(height: 12),
+        SizedBox(
+          width: double.infinity,
+          child: FilledButton.tonal(
+            onPressed: () => setState(() {
+              _isDemoMode = true;
+              _result = null;
+            }),
+            child: Text(l.tryDemo),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          l.demoButtonDescription,
+          style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+          textAlign: TextAlign.center,
+        ),
+        if (_isDemoMode) ...[
+          const SizedBox(height: 16),
+          _buildPromptSelector(),
+          const SizedBox(height: 12),
+          if (_selectedPrompt.needsUserInput) ...[
+            TextField(
+              controller: _inputController,
+              maxLength: 100,
+              maxLines: 2,
+              decoration: InputDecoration(
+                hintText: _selectedPrompt == AiPromptType.question
+                    ? l.enterQuestion
+                    : l.enterPrompt,
+                border: const OutlineInputBorder(),
+                counterText: '',
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
+          SizedBox(
+            width: double.infinity,
+            height: 48,
+            child: FilledButton.icon(
+              onPressed: _sending ? null : _onSendDemo,
+              icon: _sending
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Icon(Icons.send),
+              label: Text(_sending ? l.processing : l.send),
+            ),
+          ),
+        ],
+        if (_result != null && _result!.isDemo) ...[
+          const SizedBox(height: 16),
+          _buildDemoResultView(),
+        ],
       ],
     );
   }
@@ -650,6 +708,112 @@ class _AiModalSheetState extends State<_AiModalSheet> with SafeSetState {
         ],
       ),
     );
+  }
+
+  // ───── デモ結果表示 ─────
+
+  Widget _buildDemoResultView() {
+    final l = AppLocalizations.of(context)!;
+    final r = _result!;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.blue.shade50,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.blue.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.science, size: 18, color: Colors.blue.shade800),
+              const SizedBox(width: 4),
+              Text(
+                l.demoResponse,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue.shade800,
+                ),
+              ),
+              const Spacer(),
+              IconButton(
+                icon: const Icon(Icons.content_copy, size: 18),
+                onPressed: () {
+                  Clipboard.setData(ClipboardData(text: r.text));
+                  widget.parentContext.showSnackBarMessage(
+                    l.aiResponseCopied,
+                    duration: const Duration(seconds: 1),
+                  );
+                },
+                tooltip: l.copy,
+                visualDensity: VisualDensity.compact,
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          SelectableText(
+            r.text,
+            style: const TextStyle(fontSize: 14, height: 1.5),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l.demoDescription,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.blue.shade600,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ───── デモ送信 ─────
+
+  Future<void> _onSendDemo() async {
+    final l = AppLocalizations.of(context)!;
+    final usage = UsageService.instance;
+
+    if (!usage.canUseAi) {
+      if (!mounted) return;
+      showUsageLimitDialog(
+        widget.parentContext,
+        featureName: 'AI',
+        dailyLimit: UsageService.freeAiLimit,
+      );
+      return;
+    }
+
+    if (_selectedPrompt.needsUserInput &&
+        _inputController.text.trim().isEmpty) {
+      if (!mounted) return;
+      widget.parentContext.showSnackBarMessage(l.pleaseEnterText);
+      return;
+    }
+
+    setState(() {
+      _sending = true;
+      _result = null;
+    });
+
+    final result = await DemoAiService().process(
+      ocrText: widget.ocrText,
+      promptType: _selectedPrompt,
+      userInput: _inputController.text.trim(),
+    );
+
+    if (result.success) {
+      usage.consumeAi();
+    }
+
+    safeSetState(() {
+      _sending = false;
+      _result = result;
+    });
   }
 
   // ───── 送信 ─────

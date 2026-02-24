@@ -335,6 +335,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiConsentDecline => 'Decline';
 
   @override
+  String get tryDemo => 'Try Demo';
+
+  @override
+  String get demoResponse => 'Demo Response';
+
+  @override
+  String get demoDescription => 'Set an API key to get real AI responses.';
+
+  @override
+  String get demoButtonDescription => 'Try AI features without an API key';
+
+  @override
   String get aiConsentRevoke => 'Revoke AI data sharing consent';
 
   @override

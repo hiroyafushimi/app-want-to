@@ -116,6 +116,11 @@
   "aiConsentAgree": "Agree",
   "aiConsentDecline": "Decline",
 
+  "tryDemo": "Try Demo",
+  "demoResponse": "Demo Response",
+  "demoDescription": "Set an API key to get real AI responses.",
+  "demoButtonDescription": "Try AI features without an API key",
+
   "aiConsentRevoke": "Revoke AI data sharing consent",
   "aiConsentRevokeConfirm": "Revoke your consent to AI data sharing?\nYou will be asked again next time you use AI.",
   "aiConsentRevoked": "Consent revoked"
