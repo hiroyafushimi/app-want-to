@@ -68,6 +68,17 @@ class _SettingsScreenState extends State<SettingsScreen> with SafeSetState {
                 : null,
             onTap: () => _showApiKeyInput(context),
           ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              l.aiConsentByokNotice,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.orange.shade800,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
           if (!_hasKey)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -77,9 +88,24 @@ class _SettingsScreenState extends State<SettingsScreen> with SafeSetState {
                   color: Colors.blue.shade50,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text(
-                  l.apiKeyInfo,
-                  style: const TextStyle(fontSize: 13, color: Colors.black87),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l.apiKeyInfo,
+                      style:
+                          const TextStyle(fontSize: 13, color: Colors.black87),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      l.aiConsentByokNotice,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.orange.shade800,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -320,4 +346,3 @@ class _UsageCard extends StatelessWidget {
     );
   }
 }
-

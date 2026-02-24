@@ -686,6 +686,12 @@ abstract class AppLocalizations {
   /// **'「AI に聞く」機能を使用すると、読み取ったテキストが OpenAI のサーバーに送信されます。\n\n送信されるデータ：\n・OCR で読み取ったテキスト\n・選択したプロンプト（要約・翻訳等）\n\n受信者：\nOpenAI（データは OpenAI のプライバシーポリシーに従い処理されます）'**
   String get aiConsentMessage;
 
+  /// No description provided for @aiConsentByokNotice.
+  ///
+  /// In ja, this message translates to:
+  /// **'【重要】API Key は端末内に保存され、開発者には送信されません。利用料金はユーザーご自身の OpenAI アカウントに請求されます。API Key の管理はユーザーの責任です。'**
+  String get aiConsentByokNotice;
+
   /// No description provided for @aiConsentPrivacyLink.
   ///
   /// In ja, this message translates to:

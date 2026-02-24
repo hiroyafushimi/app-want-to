@@ -22,6 +22,15 @@ Future<bool> showAiConsentDialog(BuildContext context) async {
           children: [
             Text(l.aiConsentMessage),
             const SizedBox(height: 12),
+            Text(
+              l.aiConsentByokNotice,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.orange.shade800,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 12),
             GestureDetector(
               onTap: () => launchUrl(
                 Uri.parse('https://openai.com/privacy/'),

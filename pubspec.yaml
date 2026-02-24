@@ -1,7 +1,7 @@
 name: want_to
 description: スクショ→共有シート→範囲OCR→分類→アクション提案。AIはユーザーAPI Keyで外部処理。
 publish_to: 'none'
-version: 1.0.0+2
+version: 1.0.1+3
 
 environment:
   sdk: '>=3.0.0 <4.0.0'

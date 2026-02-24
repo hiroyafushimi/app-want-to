@@ -326,6 +326,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'When you use the \"Ask AI\" feature, the recognized text will be sent to OpenAI\'s servers.\n\nData sent:\n・Text recognized by OCR\n・Selected prompt (summary, translation, etc.)\n\nRecipient:\nOpenAI (data is processed according to OpenAI\'s Privacy Policy)';
 
   @override
+  String get aiConsentByokNotice =>
+      '[Important] Your API key is stored on your device and is not sent to the developer. API usage fees are billed to your own OpenAI account. You are responsible for managing your API key.';
+
+  @override
   String get aiConsentPrivacyLink => 'View OpenAI Privacy Policy';
 
   @override

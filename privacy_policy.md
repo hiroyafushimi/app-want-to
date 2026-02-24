@@ -1,6 +1,6 @@
 # ActClip プライバシーポリシー
 
-最終更新日: 2026年2月19日
+最終更新日: 2026年2月24日
 
 ## はじめに
 
@@ -24,7 +24,7 @@ ActClip（以下「本アプリ」）は、ユーザーのプライバシーを�
 
 ### ユーザーが任意で設定する情報
 
-- **OpenAI API Key**: ユーザーが AI 機能を利用するために任意で設定できます。API Key はデバイス内に暗号化して保存され、OpenAI へのリクエスト送信時のみ使用されます。API Key は本アプリの開発者を含む第三者に共有されることはありません。
+- **OpenAI API Key**: ユーザーが AI 機能を利用するために任意で設定できます。API Key はデバイス内に暗号化して保存され、OpenAI へのリクエスト送信時のみ使用されます。API Key は本アプリの開発者を含む第三者に共有されることはありません。API 利用料金はユーザー自身の OpenAI アカウントに課金されます。
 
 ## 外部サービスとの通信
 
@@ -34,11 +34,16 @@ ActClip（以下「本アプリ」）は、ユーザーのプライバシーを�
 
 - **送信されるデータ**: OCR で認識されたテキスト、選択したプロンプト種別（要約・質問回答・翻訳・カスタム）
 - **送信先**: OpenAI（https://api.openai.com）
+- **経路**: 本アプリから OpenAI へ直接送信され、開発者のサーバーは経由しません。
 - **送信タイミング**: ユーザーが「AI に聞く」画面で「送信」ボタンを明示的にタップした場合のみ
 - **同意の取得**: 初回利用時にアプリ内でデータ送信先と内容を説明するダイアログを表示し、ユーザーの明示的な同意を取得します。同意は設定画面からいつでも撤回できます。
 - **データの利用**: OpenAI の API 利用規約に基づき、API 経由で送信されたデータはモデルの学習には使用されません。
 
 OpenAI のプライバシーポリシーについては [OpenAI Privacy Policy](https://openai.com/privacy/) をご参照ください。
+
+### デモモード（API Key 不要）
+
+API Key 未設定時に利用できる「デモ」機能は、端末内で定型応答を生成するものであり、外部サーバーへデータ送信は行いません。
 
 ### RevenueCat（課金処理）
 
@@ -73,13 +78,14 @@ OpenAI のプライバシーポリシーについては [OpenAI Privacy Policy](
 
 本プライバシーポリシーに関するご質問がある場合は、以下までお問い合わせください。
 
+- メール: baysick.support@gmail.com
 - GitHub Issues: https://github.com/hiroyafushimi/app-want-to/issues
 
 ---
 
 # ActClip Privacy Policy
 
-Last updated: February 19, 2026
+Last updated: February 24, 2026
 
 ## Introduction
 
@@ -101,7 +107,7 @@ The following information is processed only on your device and is never transmit
 
 ## Optionally Provided Information
 
-- **OpenAI API Key**: Users may optionally set an API Key to use AI features. The API Key is stored encrypted on the device and is used only when sending requests to OpenAI. The API Key is never shared with the App developer or any third party.
+- **OpenAI API Key**: Users may optionally set an API Key to use AI features. The API Key is stored encrypted on the device and is used only when sending requests to OpenAI. The API Key is never shared with the App developer or any third party. API usage fees are billed to the user’s own OpenAI account.
 
 ## Communication with External Services
 
@@ -111,11 +117,16 @@ Only when the user has set an API Key and uses the AI feature, the following dat
 
 - **Data sent**: Text recognized by OCR, selected prompt type (summary, Q&A, translation, or custom)
 - **Recipient**: OpenAI (https://api.openai.com)
+- **Path**: Requests are sent directly from the App to OpenAI; the developer’s servers are not involved.
 - **When sent**: Only when the user explicitly taps the "Send" button on the "Ask AI" screen
 - **Consent**: On first use, the App displays a dialog explaining what data is sent and to whom, and obtains explicit user consent. Consent can be revoked at any time from the Settings screen.
 - **Data usage**: Per OpenAI's API Terms of Service, data submitted via the API is not used for model training.
 
 See [OpenAI Privacy Policy](https://openai.com/privacy/) for details.
+
+### Demo Mode (No API Key Required)
+
+The "Demo" feature generates canned responses locally on the device and does not transmit data to any external servers.
 
 ### RevenueCat (In-App Purchases)
 

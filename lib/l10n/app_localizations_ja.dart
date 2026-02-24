@@ -321,6 +321,10 @@ class AppLocalizationsJa extends AppLocalizations {
       '「AI に聞く」機能を使用すると、読み取ったテキストが OpenAI のサーバーに送信されます。\n\n送信されるデータ：\n・OCR で読み取ったテキスト\n・選択したプロンプト（要約・翻訳等）\n\n受信者：\nOpenAI（データは OpenAI のプライバシーポリシーに従い処理されます）';
 
   @override
+  String get aiConsentByokNotice =>
+      '【重要】API Key は端末内に保存され、開発者には送信されません。利用料金はユーザーご自身の OpenAI アカウントに請求されます。API Key の管理はユーザーの責任です。';
+
+  @override
   String get aiConsentPrivacyLink => 'OpenAI プライバシーポリシーを確認';
 
   @override
