@@ -5,6 +5,7 @@ import '../services/ai_consent_service.dart';
 import '../services/api_key_storage.dart';
 import '../services/iap_service.dart';
 import '../services/usage_service.dart';
+import '../utils/confirm_dialog.dart';
 import '../utils/safe_set_state.dart';
 import '../utils/snackbar_helper.dart';
 import 'paywall_screen.dart';
@@ -231,28 +232,14 @@ class _SettingsScreenState extends State<SettingsScreen> with SafeSetState {
 
   void _confirmRevokeConsent() {
     final l = AppLocalizations.of(context)!;
-    showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l.aiConsentRevoke),
-        content: Text(l.aiConsentRevokeConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(l.cancel),
-          ),
-          FilledButton(
-            onPressed: () async {
-              await AiConsentService().revokeConsent();
-              if (ctx.mounted) Navigator.pop(ctx);
-              if (mounted) {
-                context.showSnackBarMessage(l.aiConsentRevoked);
-              }
-            },
-            child: Text(l.ok),
-          ),
-        ],
-      ),
+    showConfirmDialog(
+      context,
+      title: l.aiConsentRevoke,
+      content: l.aiConsentRevokeConfirm,
+      onConfirm: () => AiConsentService().revokeConsent(),
+      successMessage: l.aiConsentRevoked,
+      cancelLabel: l.cancel,
+      confirmLabel: l.ok,
     );
   }
 
@@ -260,30 +247,18 @@ class _SettingsScreenState extends State<SettingsScreen> with SafeSetState {
 
   void _confirmDeleteKey() {
     final l = AppLocalizations.of(context)!;
-    showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l.deleteApiKey),
-        content: Text(l.deleteApiKeyConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(l.cancel),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: Colors.red),
-            onPressed: () async {
-              await _storage.delete();
-              if (ctx.mounted) Navigator.pop(ctx);
-              _loadKeyStatus();
-              if (mounted) {
-                context.showSnackBarMessage(l.apiKeyDeleted);
-              }
-            },
-            child: Text(l.delete),
-          ),
-        ],
-      ),
+    showConfirmDialog(
+      context,
+      title: l.deleteApiKey,
+      content: l.deleteApiKeyConfirm,
+      onConfirm: () async {
+        await _storage.delete();
+        _loadKeyStatus();
+      },
+      successMessage: l.apiKeyDeleted,
+      cancelLabel: l.cancel,
+      confirmLabel: l.delete,
+      confirmColor: Colors.red,
     );
   }
 }
