@@ -36,10 +36,15 @@ Future<void> showConfirmDialog(
                 ? null
                 : () async {
                     setState(() => isExecuting = true);
-                    await onConfirm();
-                    if (ctx.mounted) Navigator.pop(ctx);
-                    if (context.mounted) {
-                      context.showSnackBarMessage(successMessage);
+                    try {
+                      await onConfirm();
+                      if (context.mounted) {
+                        context.showSnackBarMessage(successMessage);
+                      }
+                    } on Exception {
+                      // onConfirm の例外時はダイアログを閉じるだけにする
+                    } finally {
+                      if (ctx.mounted) Navigator.pop(ctx);
                     }
                   },
             child: Text(confirmLabel),

@@ -88,6 +88,41 @@ void main() {
     expect(callCount, 1);
   });
 
+  testWidgets('onConfirm が例外を投げてもダイアログが閉じてボタンが復旧する',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Builder(
+            builder: (context) => ElevatedButton(
+              onPressed: () => showConfirmDialog(
+                context,
+                title: 'Delete?',
+                content: 'Are you sure?',
+                onConfirm: () async {
+                  throw Exception('network error');
+                },
+                successMessage: 'Deleted!',
+                cancelLabel: 'Cancel',
+                confirmLabel: 'Delete',
+              ),
+              child: const Text('Open'),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Open'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
+
+    // ダイアログが閉じている
+    expect(find.text('Delete?'), findsNothing);
+  });
+
   testWidgets('showConfirmDialog cancel does not execute onConfirm',
       (tester) async {
     var confirmed = false;
