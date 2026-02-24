@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../constants/app_constants.dart';
 import '../l10n/app_localizations.dart';
 import '../services/ai_consent_service.dart';
 import '../services/ai_service.dart';
@@ -308,13 +309,6 @@ class _ResultScreenState extends State<ResultScreen> with SafeSetState {
       context.showSnackBarMessage(l.couldNotGenerateQuery);
       return;
     }
-    final encoded = Uri.encodeComponent(query);
-    final sites = [
-      _SearchSite('Amazon', 'https://www.amazon.co.jp/s?k=$encoded'),
-      _SearchSite('Rakuten', 'https://search.rakuten.co.jp/search/mall/$encoded/'),
-      _SearchSite(
-          'Yahoo! Shopping', 'https://shopping.yahoo.co.jp/search?p=$encoded'),
-    ];
 
     showModalBottomSheet<void>(
       context: context,
@@ -331,13 +325,17 @@ class _ResultScreenState extends State<ResultScreen> with SafeSetState {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            ...sites.map((s) => ListTile(
+            ...AppConstants.searchSites.map((s) => ListTile(
                   leading: const Icon(Icons.open_in_browser),
                   title: Text(s.name),
-                  subtitle: Text(s.url, maxLines: 1, overflow: TextOverflow.ellipsis),
+                  subtitle: Text(
+                    s.buildUrl(query),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   onTap: () {
                     Navigator.pop(ctx);
-                    _launchUrl(s.url);
+                    _launchUrl(s.buildUrl(query));
                   },
                 )),
             const SizedBox(height: 8),
@@ -380,12 +378,6 @@ class _ResultScreenState extends State<ResultScreen> with SafeSetState {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
   }
-}
-
-class _SearchSite {
-  const _SearchSite(this.name, this.url);
-  final String name;
-  final String url;
 }
 
 /// ───── AI モーダルシート ─────
