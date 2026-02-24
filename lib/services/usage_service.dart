@@ -23,8 +23,8 @@ class UsageService {
   static const int freeAiLimit = 1;
 
   // ── 内部カウンター ──
-  int _ocrCount = 0;
-  int _aiCount = 0;
+  final _UsageCounter _ocr = _UsageCounter(limit: freeOcrLimit, label: 'OCR');
+  final _UsageCounter _ai = _UsageCounter(limit: freeAiLimit, label: 'AI');
   String _dateKey = '';
 
   /// 有料プラン所持フラグ（IAPService と連携して更新）
@@ -42,8 +42,8 @@ class UsageService {
   void _resetIfNewDay() {
     final today = _today;
     if (_dateKey != today) {
-      _ocrCount = 0;
-      _aiCount = 0;
+      _ocr.reset();
+      _ai.reset();
       _dateKey = today;
       _log.info('日付リセット: $today');
     }
@@ -55,24 +55,23 @@ class UsageService {
   int get remainingOcr {
     if (isPremium) return -1; // 無制限
     _resetIfNewDay();
-    return (freeOcrLimit - _ocrCount).clamp(0, freeOcrLimit);
+    return _ocr.remaining;
   }
 
   /// OCR が実行可能か
   bool get canUseOcr {
     if (isPremium) return true;
     _resetIfNewDay();
-    return _ocrCount < freeOcrLimit;
+    return _ocr.canUse;
   }
 
   /// OCR 使用をカウント。成功時 true、上限到達で false。
   bool consumeOcr() {
     if (isPremium) return true;
     _resetIfNewDay();
-    if (_ocrCount >= freeOcrLimit) return false;
-    _ocrCount++;
-    _log.info('OCR 使用: $_ocrCount/$freeOcrLimit');
-    return true;
+    final ok = _ocr.consume();
+    if (ok) _log.info('OCR 使用: ${_ocr.count}/$freeOcrLimit');
+    return ok;
   }
 
   // ── AI ──
@@ -81,23 +80,43 @@ class UsageService {
   int get remainingAi {
     if (isPremium) return -1; // 無制限
     _resetIfNewDay();
-    return (freeAiLimit - _aiCount).clamp(0, freeAiLimit);
+    return _ai.remaining;
   }
 
   /// AI が実行可能か
   bool get canUseAi {
     if (isPremium) return true;
     _resetIfNewDay();
-    return _aiCount < freeAiLimit;
+    return _ai.canUse;
   }
 
   /// AI 使用をカウント。成功時 true、上限到達で false。
   bool consumeAi() {
     if (isPremium) return true;
     _resetIfNewDay();
-    if (_aiCount >= freeAiLimit) return false;
-    _aiCount++;
-    _log.info('AI 使用: $_aiCount/$freeAiLimit');
+    final ok = _ai.consume();
+    if (ok) _log.info('AI 使用: ${_ai.count}/$freeAiLimit');
+    return ok;
+  }
+}
+
+/// 単一リソースの日次カウンター。
+class _UsageCounter {
+  _UsageCounter({required this.limit, required this.label});
+
+  final int limit;
+  final String label;
+  int _count = 0;
+
+  int get count => _count;
+  int get remaining => (limit - _count).clamp(0, limit);
+  bool get canUse => _count < limit;
+
+  bool consume() {
+    if (_count >= limit) return false;
+    _count++;
     return true;
   }
+
+  void reset() => _count = 0;
 }

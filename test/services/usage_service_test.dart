@@ -73,6 +73,25 @@ void main() {
     });
   });
 
+  group('UsageService - カウンター独立性', () {
+    late UsageService service;
+
+    setUp(() {
+      service = UsageService.forTest(
+        clock: () => DateTime(2026, 1, 15),
+      );
+    });
+
+    test('OCR と AI のカウンターは独立している', () {
+      for (var i = 0; i < UsageService.freeOcrLimit; i++) {
+        service.consumeOcr();
+      }
+      expect(service.canUseOcr, isFalse);
+      expect(service.canUseAi, isTrue);
+      expect(service.consumeAi(), isTrue);
+    });
+  });
+
   group('UsageService - 日付リセット', () {
     test('日付が変わるとカウンターがリセットされる', () {
       var currentDate = DateTime(2026, 1, 15);
