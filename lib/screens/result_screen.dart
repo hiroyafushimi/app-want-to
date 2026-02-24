@@ -776,17 +776,6 @@ class _AiModalSheetState extends State<_AiModalSheet> with SafeSetState {
 
   Future<void> _onSendDemo() async {
     final l = AppLocalizations.of(context)!;
-    final usage = UsageService.instance;
-
-    if (!usage.canUseAi) {
-      if (!mounted) return;
-      showUsageLimitDialog(
-        widget.parentContext,
-        featureName: 'AI',
-        dailyLimit: UsageService.freeAiLimit,
-      );
-      return;
-    }
 
     if (_selectedPrompt.needsUserInput &&
         _inputController.text.trim().isEmpty) {
@@ -805,10 +794,6 @@ class _AiModalSheetState extends State<_AiModalSheet> with SafeSetState {
       promptType: _selectedPrompt,
       userInput: _inputController.text.trim(),
     );
-
-    if (result.success) {
-      usage.consumeAi();
-    }
 
     safeSetState(() {
       _sending = false;
