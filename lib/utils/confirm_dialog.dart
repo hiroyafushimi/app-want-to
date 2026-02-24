@@ -15,30 +15,37 @@ Future<void> showConfirmDialog(
   required String confirmLabel,
   Color? confirmColor,
 }) {
+  var isExecuting = false;
+
   return showDialog<void>(
     context: context,
-    builder: (ctx) => AlertDialog(
-      title: Text(title),
-      content: Text(content),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(ctx),
-          child: Text(cancelLabel),
-        ),
-        FilledButton(
-          style: confirmColor != null
-              ? FilledButton.styleFrom(backgroundColor: confirmColor)
-              : null,
-          onPressed: () async {
-            await onConfirm();
-            if (ctx.mounted) Navigator.pop(ctx);
-            if (context.mounted) {
-              context.showSnackBarMessage(successMessage);
-            }
-          },
-          child: Text(confirmLabel),
-        ),
-      ],
+    builder: (ctx) => StatefulBuilder(
+      builder: (ctx, setState) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(
+            onPressed: isExecuting ? null : () => Navigator.pop(ctx),
+            child: Text(cancelLabel),
+          ),
+          FilledButton(
+            style: confirmColor != null
+                ? FilledButton.styleFrom(backgroundColor: confirmColor)
+                : null,
+            onPressed: isExecuting
+                ? null
+                : () async {
+                    setState(() => isExecuting = true);
+                    await onConfirm();
+                    if (ctx.mounted) Navigator.pop(ctx);
+                    if (context.mounted) {
+                      context.showSnackBarMessage(successMessage);
+                    }
+                  },
+            child: Text(confirmLabel),
+          ),
+        ],
+      ),
     ),
   );
 }

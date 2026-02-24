@@ -70,7 +70,7 @@ class UsageService {
     if (isPremium) return true;
     _resetIfNewDay();
     final ok = _ocr.consume();
-    if (ok) _log.info('OCR 使用: ${_ocr.count}/$freeOcrLimit');
+    if (ok) _log.info('${_ocr.label} 使用: ${_ocr.count}/${_ocr.limit}');
     return ok;
   }
 
@@ -95,7 +95,7 @@ class UsageService {
     if (isPremium) return true;
     _resetIfNewDay();
     final ok = _ai.consume();
-    if (ok) _log.info('AI 使用: ${_ai.count}/$freeAiLimit');
+    if (ok) _log.info('${_ai.label} 使用: ${_ai.count}/${_ai.limit}');
     return ok;
   }
 }

@@ -42,6 +42,52 @@ void main() {
     expect(confirmed, isTrue);
   });
 
+  testWidgets('onConfirm が実行中はボタンが無効化され連打できない',
+      (tester) async {
+    var callCount = 0;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Builder(
+            builder: (context) => ElevatedButton(
+              onPressed: () => showConfirmDialog(
+                context,
+                title: 'Delete?',
+                content: 'Are you sure?',
+                onConfirm: () async {
+                  callCount++;
+                  await Future<void>.delayed(const Duration(seconds: 1));
+                },
+                successMessage: 'Deleted!',
+                cancelLabel: 'Cancel',
+                confirmLabel: 'Delete',
+              ),
+              child: const Text('Open'),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Open'));
+    await tester.pumpAndSettle();
+
+    // 1回目のタップで onConfirm を開始
+    await tester.tap(find.text('Delete'));
+    await tester.pump(); // setState を反映
+
+    // 2回目のタップ（ボタンが無効化されているはず）
+    await tester.tap(find.text('Delete'));
+    await tester.pump();
+
+    // タイマーを完了させてダイアログを閉じる
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
+
+    expect(callCount, 1);
+  });
+
   testWidgets('showConfirmDialog cancel does not execute onConfirm',
       (tester) async {
     var confirmed = false;
