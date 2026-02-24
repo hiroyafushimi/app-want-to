@@ -4,6 +4,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import '../l10n/app_localizations.dart';
 import '../services/iap_service.dart';
 import '../utils/safe_set_state.dart';
+import '../utils/snackbar_helper.dart';
 
 /// 課金画面（仕様 1.4: 月額¥480 / 買い切り¥2,200）
 class PaywallScreen extends StatefulWidget {
@@ -192,9 +193,7 @@ class _PaywallScreenState extends State<PaywallScreen> with SafeSetState {
     if (!mounted) return;
     safeSetState(() => _purchasing = false);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(success ? successMessage : failureMessage)),
-    );
+    context.showSnackBarMessage(success ? successMessage : failureMessage);
     if (success) Navigator.of(context).pop(true);
   }
 

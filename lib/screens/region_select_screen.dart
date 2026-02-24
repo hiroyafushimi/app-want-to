@@ -11,6 +11,7 @@ import '../services/classification_service.dart';
 import '../services/ocr_service.dart';
 import '../services/usage_service.dart';
 import '../utils/safe_set_state.dart';
+import '../utils/snackbar_helper.dart';
 import '../utils/usage_limit_dialog.dart';
 import 'result_screen.dart';
 
@@ -225,9 +226,7 @@ class _RegionSelectScreenState extends State<RegionSelectScreen>
     } catch (e) {
       if (!mounted) return;
       final l = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l.ocrFailed(e.toString()))),
-      );
+      context.showSnackBarMessage(l.ocrFailed(e.toString()));
     } finally {
       safeSetState(() => _cropping = false);
     }

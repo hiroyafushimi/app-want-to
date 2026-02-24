@@ -6,6 +6,7 @@ import '../services/api_key_storage.dart';
 import '../services/iap_service.dart';
 import '../services/usage_service.dart';
 import '../utils/safe_set_state.dart';
+import '../utils/snackbar_helper.dart';
 import 'paywall_screen.dart';
 
 /// 設定画面：API Key入力、残り回数、課金（仕様 6. 画面フロー 5）
@@ -217,9 +218,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SafeSetState {
               Navigator.pop(ctx);
               _loadKeyStatus();
               if (!mounted) return;
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l.apiKeySaved)),
-              );
+              context.showSnackBarMessage(l.apiKeySaved);
             },
             child: Text(l.save),
           ),
@@ -247,9 +246,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SafeSetState {
               await AiConsentService().revokeConsent();
               if (ctx.mounted) Navigator.pop(ctx);
               if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(l.aiConsentRevoked)),
-                );
+                context.showSnackBarMessage(l.aiConsentRevoked);
               }
             },
             child: Text(l.ok),
@@ -280,9 +277,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SafeSetState {
               if (ctx.mounted) Navigator.pop(ctx);
               _loadKeyStatus();
               if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(l.apiKeyDeleted)),
-                );
+                context.showSnackBarMessage(l.apiKeyDeleted);
               }
             },
             child: Text(l.delete),

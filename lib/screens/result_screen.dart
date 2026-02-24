@@ -11,6 +11,7 @@ import '../services/classification_service.dart';
 import '../services/usage_service.dart';
 import '../utils/ai_consent_dialog.dart';
 import '../utils/safe_set_state.dart';
+import '../utils/snackbar_helper.dart';
 import '../utils/usage_limit_dialog.dart';
 
 /// 結果画面（仕様 6. 画面フロー 3）
@@ -304,9 +305,7 @@ class _ResultScreenState extends State<ResultScreen> with SafeSetState {
     final l = AppLocalizations.of(context)!;
     final query = ClassificationService.extractProductQuery(widget.ocrText);
     if (query.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l.couldNotGenerateQuery)),
-      );
+      context.showSnackBarMessage(l.couldNotGenerateQuery);
       return;
     }
     final encoded = Uri.encodeComponent(query);
@@ -364,12 +363,7 @@ class _ResultScreenState extends State<ResultScreen> with SafeSetState {
   void _copyText(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     Clipboard.setData(ClipboardData(text: widget.ocrText));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l.copied),
-        duration: const Duration(seconds: 1),
-      ),
-    );
+    context.showSnackBarMessage(l.copied, duration: const Duration(seconds: 1));
   }
 
   /// OS 共有
@@ -646,11 +640,9 @@ class _AiModalSheetState extends State<_AiModalSheet> with SafeSetState {
                 icon: const Icon(Icons.content_copy, size: 18),
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: r.text));
-                  ScaffoldMessenger.of(widget.parentContext).showSnackBar(
-                    SnackBar(
-                      content: Text(AppLocalizations.of(context)!.aiResponseCopied),
-                      duration: const Duration(seconds: 1),
-                    ),
+                  widget.parentContext.showSnackBarMessage(
+                    AppLocalizations.of(context)!.aiResponseCopied,
+                    duration: const Duration(seconds: 1),
                   );
                 },
                 tooltip: AppLocalizations.of(context)!.copy,
@@ -699,9 +691,7 @@ class _AiModalSheetState extends State<_AiModalSheet> with SafeSetState {
     if (_selectedPrompt.needsUserInput &&
         _inputController.text.trim().isEmpty) {
       if (!mounted) return;
-      ScaffoldMessenger.of(parentCtx).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.pleaseEnterText)),
-      );
+      parentCtx.showSnackBarMessage(AppLocalizations.of(context)!.pleaseEnterText);
       return;
     }
 
