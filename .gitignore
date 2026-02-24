@@ -61,3 +61,5 @@ Thumbs.db
 
 # Cursor (optional: ローカル設定のみ無視する場合)
 # .cursor/
+.CLAUDE.md
+skills/**
