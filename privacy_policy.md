@@ -78,7 +78,7 @@ API Key 未設定時に利用できる「デモ」機能は、端末内で定型
 
 本プライバシーポリシーに関するご質問がある場合は、以下までお問い合わせください。
 
-- メール: baysick.support@gmail.com
+- メール: baysick.ff@gmail.com
 - GitHub Issues: https://github.com/hiroyafushimi/app-want-to/issues
 
 ---
