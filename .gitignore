@@ -63,3 +63,6 @@ Thumbs.db
 # .cursor/
 .CLAUDE.md
 skills/**
+
+.fvm/
+.skills/
